@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다항함수 개형 훈련 — 삼차 · 사차</title>
+<style>
+:root{
+  --paper:#E9EEF1; --paper-2:#F6F8F9;
+  --grid:#C7D6DF; --grid-strong:#A8BCC9;
+  --ink:#152430; --ink-2:#4B6070; --ink-3:#7E9099;
+  --curve:#1B5E7E; --curve-2:#7A3E8F; --curve-3:#0F6E56;
+  --mark:#C2402F; --ok:#1C6B4C;
+  --hl:#F2CE3F; --hl-2:#B58E00; --rule:#B9C9D3;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{
+  background:var(--paper);
+  background-image:linear-gradient(var(--grid) .5px,transparent .5px),linear-gradient(90deg,var(--grid) .5px,transparent .5px);
+  background-size:26px 26px;
+  color:var(--ink);
+  font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif;
+  font-size:15px;line-height:1.6;padding:20px 16px 64px;
+}
+.wrap{max-width:1080px;margin:0 auto}
+.math{font-family:"Cambria Math",Cambria,"Times New Roman",serif}
+.math i{font-style:italic}
+
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:18px}
+h1{font-size:20px;margin:0;letter-spacing:-.01em;font-weight:600}
+.sub{font-size:12px;color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase}
+.spacer{flex:1}
+.stats{display:flex;gap:16px;font-size:12px;color:var(--ink-2)}
+.stats b{display:block;font-size:19px;color:var(--ink);font-weight:600;line-height:1.2}
+
+.panel{background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;padding:14px 16px;margin-bottom:16px}
+.panel h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:0 0 10px;font-weight:600}
+
+/* ---- 설정 패널 ---- */
+.setrow{display:grid;grid-template-columns:78px 1fr;gap:10px;align-items:start;padding:9px 0;border-top:1px solid var(--rule)}
+.setrow:first-of-type{border-top:none;padding-top:0}
+.setlab{font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;padding-top:7px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{position:relative;display:inline-flex;align-items:center;gap:0;font-size:13.5px;cursor:pointer;user-select:none;
+  border:1px solid var(--grid-strong);border-radius:999px;padding:5px 13px;background:#fff;color:var(--ink-2);
+  transition:background .12s,color .12s,border-color .12s;white-space:nowrap}
+.chip input{position:absolute;opacity:0;width:100%;height:100%;left:0;top:0;margin:0;cursor:pointer}
+.chip:hover{border-color:var(--ink-3)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.on.acc{background:var(--curve-3);border-color:var(--curve-3)}
+.chip.on.acc2{background:var(--curve-2);border-color:var(--curve-2)}
+.chip:focus-within{outline:2px solid var(--mark);outline-offset:2px}
+.note{font-size:12px;color:var(--hl-2);margin-top:10px}
+
+button{font-family:inherit;font-size:14px;padding:8px 16px;border-radius:2px;cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:var(--paper-2)}
+button:hover{background:#0C1A24}
+button.ghost{background:transparent;color:var(--ink)}
+button.ghost:hover{background:#DDE5EA}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:860px){.cols{grid-template-columns:1fr}.setrow{grid-template-columns:1fr;gap:4px}.setlab{padding-top:0}}
+
+.qhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.tag{font-size:11px;letter-spacing:.08em;border:1px solid var(--rule);padding:2px 7px;color:var(--ink-2);border-radius:2px}
+.fx{font-size:25px;margin:8px 0 16px;line-height:1.4}
+@media(max-width:520px){.fx{font-size:20px}}
+
+.q{border-top:1px solid var(--rule);padding:12px 0}
+.q:first-of-type{border-top:none}
+.qt{font-size:11px;letter-spacing:.1em;color:var(--hl-2);font-weight:600;margin-bottom:6px}
+.qt.abs{color:var(--curve-2)}
+.qt.cnt{color:var(--curve-3)}
+.qbody{font-size:14px;margin-bottom:8px}
+.fields{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.f{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)}
+.f label.chk{font-size:13px}
+label.chk{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+label.chk input{accent-color:var(--curve);width:16px;height:16px;margin:0}
+input[type=number]{font-family:"Cambria Math",Cambria,serif;font-size:16px;width:74px;padding:6px 8px;text-align:center;border:1px solid var(--grid-strong);border-radius:2px;background:#fff;color:var(--ink)}
+input[type=number].good{border-color:var(--ok);background:#EAF4EF}
+input[type=number].bad{border-color:var(--mark);background:#FBECEA}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+.verdict{font-size:13px;margin-top:8px;font-weight:600}
+.verdict.ok{color:var(--ok)}
+.verdict.no{color:var(--mark)}
+.why{font-size:13px;color:var(--ink-2);margin-top:4px}
+.why .math{color:var(--ink)}
+
+.gwrap{background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;padding:10px;margin-bottom:16px}
+.gcap{font-size:12px;color:var(--ink-2);letter-spacing:.04em;margin:0 0 4px}
+.gcap b{color:var(--ink);font-weight:600}
+svg{display:block;width:100%;height:auto}
+.veil{display:flex;align-items:center;justify-content:center;height:300px;color:var(--ink-3);font-size:14px;text-align:center;padding:0 24px;border:1px dashed var(--grid-strong);border-radius:2px}
+
+table.mono{width:100%;border-collapse:collapse;margin-top:12px;font-family:"Cambria Math",Cambria,serif;font-size:15px}
+table.mono th,table.mono td{border:1px solid var(--rule);padding:6px 4px;text-align:center}
+table.mono th{background:#DFE7EC;font-weight:600;font-size:13px;font-family:inherit}
+.hint{font-size:13px;color:var(--ink-2);margin-top:10px;padding-left:10px;border-left:2px solid var(--hl)}
+.foot{font-size:12px;color:var(--ink-3);margin-top:22px;text-align:center}
+
+/* ---- 탐구 모드 ---- */
+.stagewrap{padding:16px 18px}
+.stagehead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.stagetag{font-size:11px;letter-spacing:.1em;background:var(--ink);color:#fff;border-radius:999px;padding:3px 10px}
+.stagetitle{font-size:13px;letter-spacing:.06em;color:var(--ink-2);font-weight:600}
+.stagecard{border:1px solid var(--rule);border-radius:3px;background:#fff;padding:18px;cursor:pointer}
+.exfx{font-size:30px;letter-spacing:.01em;line-height:1.45}
+@media(max-width:560px){.exfx{font-size:22px}}
+.exline{margin-top:16px;padding-top:14px;border-top:1px dashed var(--grid-strong)}
+.exlab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.exline .math{font-size:21px;line-height:1.5}
+.exfac{color:var(--curve-3);margin-top:4px}
+.exwhy{font-size:13px;color:var(--ink-2);margin-top:8px}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.choices{grid-template-columns:1fr}}
+.choice{border:2px solid var(--grid-strong);border-radius:3px;background:#0F1E29;padding:6px;cursor:pointer;position:relative}
+.choice:hover{border-color:var(--ink-3)}
+.choice .cl{position:absolute;top:6px;left:8px;font-size:12px;color:#8FA6B4;font-weight:600;z-index:2}
+.choice.right{border-color:#39D98A;box-shadow:0 0 0 3px rgba(57,217,138,.2)}
+.choice.wrong{border-color:#FF6B4A;opacity:.55}
+.exctl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:12px}
+.exctl .exlab{margin:0}
+select#exLayer{font-family:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--grid-strong);border-radius:2px;background:#fff;color:var(--ink)}
+input[type=range]{accent-color:var(--curve-3);width:140px}
+.exval{font-family:"Cambria Math",Cambria,serif;font-size:15px;min-width:38px;display:inline-block}
+.readout{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.rd{font-size:13px;border:1px solid var(--rule);border-radius:999px;padding:3px 12px;background:var(--paper-2)}
+.rd b{font-family:"Cambria Math",Cambria,serif;font-size:16px}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#DFE7EC;color:var(--ink-2);margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="sub">미적분 · 다항함수 개형</div>
+    <h1>개형 훈련소 <span class="pill" id="poolsize"></span></h1>
+  </div>
+  <div class="spacer"></div>
+  <div class="stats">
+    <div>맞힌 문항<b id="stCorrect">0</b></div>
+    <div>푼 문항<b id="stTotal">0</b></div>
+    <div>정답률<b id="stRate">—</b></div>
+    <div>연속<b id="stStreak">0</b></div>
+  </div>
+</header>
+
+<section class="panel" id="modePanel">
+  <div class="setrow" style="border-top:none;padding-top:0">
+    <div class="setlab">모드</div>
+    <div class="chips">
+      <label class="chip on"><input type="radio" name="mode" id="modeDrill" checked>훈련 (채점)</label>
+      <label class="chip"><input type="radio" name="mode" id="modeEx">탐구 (단계별 공개)</label>
+    </div>
+  </div>
+  <div class="setrow">
+    <div class="setlab">차수</div>
+    <div class="chips">
+      <label class="chip on"><input type="radio" name="deg" id="deg3" checked>삼차함수</label>
+      <label class="chip"><input type="radio" name="deg" id="deg4">사차함수</label>
+    </div>
+  </div>
+  <div class="setrow" id="rowFam" hidden>
+    <div class="setlab">계열</div>
+    <div class="chips">
+      <label class="chip on"><input type="radio" name="fam" id="famAll" checked>전체</label>
+      <label class="chip"><input type="radio" name="fam" id="famA">대칭형 W</label>
+      <label class="chip"><input type="radio" name="fam" id="famB">삼중근형</label>
+      <label class="chip"><input type="radio" name="fam" id="famC">비대칭 3극점</label>
+      <label class="chip"><input type="radio" name="fam" id="famD">극값 1개형</label>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="drillSet">
+  <h2>문항 설정</h2>
+
+  <div class="setrow" style="border-top:none;padding-top:0">
+    <div class="setlab">기본</div>
+    <div class="chips">
+      <label class="chip on"><input type="checkbox" id="t1" checked>극점 · 변곡점</label>
+      <label class="chip on"><input type="checkbox" id="t2" checked>y = k 교점</label>
+    </div>
+  </div>
+
+  <div class="setrow">
+    <div class="setlab">비율관계</div>
+    <div class="chips" id="chipsRatio">
+      <label class="chip on" data-deg="3"><input type="checkbox" id="t3" checked>1 : 1 : 1 : 1</label>
+      <label class="chip on" data-deg="3"><input type="checkbox" id="t4" checked>1 : √3</label>
+      <label class="chip" data-deg="4"><input type="checkbox" id="tR">1 : √2 · 2 : 1 : 1</label>
+      <label class="chip" data-deg="4"><input type="checkbox" id="tW">이중접선</label>
+    </div>
+  </div>
+
+  <div class="setrow">
+    <div class="setlab">변환</div>
+    <div class="chips">
+      <label class="chip acc2"><input type="checkbox" id="t5">y = |f(x)|</label>
+    </div>
+  </div>
+
+  <div class="setrow">
+    <div class="setlab">근의 개수</div>
+    <div class="chips">
+      <label class="chip acc"><input type="checkbox" id="t7">g(t) : f(x) = t</label>
+    </div>
+  </div>
+
+  <div class="setrow">
+    <div class="setlab">옵션</div>
+    <div class="chips">
+      <label class="chip" data-deg="3"><input type="checkbox" id="noext">극값 없는 개형 섞기</label>
+      <label class="chip" hidden><input type="checkbox" id="t6"><input type="checkbox" id="t8"></label>
+      <label class="chip"><input type="checkbox" id="wrongonly">오답 문제만</label>
+    </div>
+  </div>
+
+  <div class="note" id="poolNote"></div>
+  <div class="btnrow">
+    <button id="newBtn">새 문제</button>
+    <button class="ghost" id="resetBtn">기록 지우기</button>
+    <span class="f" id="bankInfo"></span>
+  </div>
+</section>
+
+<div class="cols" id="drillCols">
+  <section class="panel" id="qpanel">
+    <div class="qhead">
+      <h2 style="margin:0">문제 <span id="qno"></span></h2>
+      <span class="tag" id="qtag"></span>
+    </div>
+    <div class="fx math" id="fx"></div>
+    <div id="qs"></div>
+    <div class="btnrow">
+      <button id="gradeBtn">채점</button>
+      <button class="ghost" id="nextBtn" disabled>다음 문제</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="gwrap">
+      <p class="gcap"><b>y = f(x)</b></p>
+      <div id="graphBox"><div class="veil">채점하면 개형이 공개됩니다.<br>먼저 종이에 그려보세요.</div></div>
+      <div class="chips" id="ovBox" style="margin-top:10px;display:none">
+        <label class="chip on"><input type="checkbox" id="ov1" checked>비율 눈금</label>
+        <label class="chip on"><input type="checkbox" id="ov2" checked>보조선</label>
+      </div>
+    </div>
+    <div id="absBox"></div>
+    <div id="tableBox"></div>
+  </section>
+</div>
+
+<section id="exUI" hidden>
+  <div class="panel stagewrap">
+    <div class="stagehead">
+      <span class="stagetag" id="exStep">1 / 5</span>
+      <span class="stagetitle" id="exTitle">함수</span>
+      <span class="spacer"></span>
+      <button class="ghost" id="exNew">새 함수</button>
+    </div>
+
+    <div class="stagecard" id="exCard">
+      <div class="exfx math" id="exFx"></div>
+
+      <div class="exline" id="exDf" hidden>
+        <div class="exlab">도함수</div>
+        <div class="math" id="exDfPlain"></div>
+        <div class="math exfac" id="exDfFac"></div>
+        <div class="exwhy" id="exDfWhy"></div>
+      </div>
+
+      <div class="exline" id="exQuiz" hidden>
+        <div class="exlab">이 도함수에 맞는 개형은?</div>
+        <div class="choices" id="exChoices"></div>
+        <div class="exwhy" id="exQuizWhy"></div>
+      </div>
+
+      <div class="exline" id="exStage" hidden>
+        <div class="exctl">
+          <label class="exlab" for="exLayer">레이어</label>
+          <select id="exLayer">
+            <option value="base">극값 · 비율관계</option>
+            <option value="abs">y = |f(x)| 개형</option>
+            <option value="g">g(t) : f(x) = t 의 근의 개수</option>
+            <option value="h">h(t) : y = t(x − a) 와의 교점</option>
+          </select>
+          <span id="exHctl" hidden>
+            <label class="exlab" for="exA">a</label>
+            <input type="range" id="exA" min="-6" max="6" step="0.5" value="0">
+            <b class="exval" id="exAv">0</b>
+            <label class="exlab" for="exT">기울기 t</label>
+            <input type="range" id="exT" min="-20" max="20" step="0.05" value="0">
+            <b class="exval" id="exTv">0</b>
+            <label class="chk" style="font-size:13px"><input type="checkbox" id="exAbsTarget">|f(x)| 에 대해</label>
+          </span>
+        </div>
+        <div id="exPlot"></div>
+        <div id="exSub"></div>
+        <div class="exwhy" id="exWhy"></div>
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button id="exNext">다음 단계 →</button>
+      <button class="ghost" id="exBack">← 이전</button>
+      <span class="f" id="exHint">카드를 눌러도 다음 단계로 넘어갑니다.</span>
+    </div>
+  </div>
+</section>
+
+<p class="foot">종이에 개형을 먼저 그린 뒤 특징값을 입력하세요. 기록은 이 브라우저에만 저장됩니다.</p>
+</div>
+
+<script>
+"use strict";
+const S3=Math.sqrt(3),S2=Math.sqrt(2);
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function uniq(arr,tol){const s=arr.slice().sort((a,b)=>a-b),u=[];for(const v of s)if(!u.length||Math.abs(v-u[u.length-1])>(tol||1e-6))u.push(v);return u;}
+const isInt=v=>Math.abs(v-Math.round(v))<1e-9;
+
+/* ================= 다항식 유틸 (계수 배열은 최고차부터) ================= */
+const pEval=(co,x)=>co.reduce((s,c)=>s*x+c,0);
+const pDeriv=co=>{const n=co.length-1,o=[];for(let i=0;i<n;i++)o.push(co[i]*(n-i));return o.length?o:[0];};
+function pRoots(co){
+  while(co.length>1&&co[0]===0)co=co.slice(1);
+  const n=co.length-1;
+  if(n<=0)return [];
+  if(n===1)return [-co[1]/co[0]];
+  const dr=pRoots(pDeriv(co));
+  const R=1+co.slice(1).reduce((m,c)=>Math.max(m,Math.abs(c)),0)/Math.abs(co[0]);
+  const edges=[-R].concat(dr.filter(x=>x>-R&&x<R),[R]);
+  const out=[],q=x=>pEval(co,x);
+  for(let i=0;i<edges.length-1;i++){
+    let lo=edges[i],hi=edges[i+1];
+    const flo=q(lo),fhi=q(hi);
+    if(flo===0)out.push(lo);
+    if(fhi===0)out.push(hi);
+    if(flo*fhi<0){
+      for(let t=0;t<200;t++){const mid=(lo+hi)/2;if((q(mid)<0)===(flo<0))lo=mid;else hi=mid;}
+      out.push((lo+hi)/2);
+    }
+  }
+  return uniq(out,1e-7);
+}
+function pStr(co){
+  const n=co.length-1;let s="";
+  for(let i=0;i<co.length;i++){
+    const c=co[i],e=n-i;if(c===0)continue;
+    const abs=Math.abs(c);
+    s+=s===""?(c<0?"&minus;":""):(c<0?" &minus; ":" + ");
+    if(abs!==1||e===0)s+=abs;
+    if(e>0)s+="<i>x</i>";
+    if(e>1)s+="<sup>"+e+"</sup>";
+  }
+  return s===""?"0":s;
+}
+const sg=v=>(v<0?"&minus;":"")+Math.abs(v);
+const num=v=>Math.abs(v-Math.round(v))<1e-9?String(Math.round(v)):(+v.toFixed(3)).toString();
+
+/* ================= 공용 지표 ================= */
+function gCount(p,t){
+  let c=0;
+  for(const k of p.crit)if(k.v===t)c++;
+  const lead=p.co[0],even=(p.co.length-1)%2===0;
+  const atNeg=even?(lead>0?Infinity:-Infinity):(lead>0?-Infinity:Infinity);
+  const atPos=lead>0?Infinity:-Infinity;
+  const vals=[atNeg].concat(p.crit.map(k=>k.v),[atPos]);
+  for(let i=0;i<vals.length-1;i++){
+    const lo=Math.min(vals[i],vals[i+1]),hi=Math.max(vals[i],vals[i+1]);
+    if(t>lo&&t<hi)c++;
+  }
+  return c;
+}
+function critVals(p){return uniq(p.crit.map(k=>k.v),1e-9);}
+function gJumps(p){return critVals(p).filter(v=>gCount(p,v)!==gCount(p,v-0.5)||gCount(p,v)!==gCount(p,v+0.5)).length;}
+function gSpanFor(p,target){
+  const vs=critVals(p);if(vs.length<2)return 0;
+  let L=0;
+  for(let i=0;i<vs.length-1;i++)if(gCount(p,(vs[i]+vs[i+1])/2)===target)L+=vs[i+1]-vs[i];
+  return L;
+}
+function intCountFor(p,target){
+  const vs=critVals(p);if(vs.length<2)return 0;
+  let c=0;
+  for(let t=Math.ceil(vs[0]);t<=Math.floor(vs[vs.length-1]);t++)if(gCount(p,t)===target)c++;
+  return c;
+}
+/* |f(x)| 지표 — 수치 근찾기는 중근을 놓치므로 극값 비교(정수 연산)로만 계산 */
+function absStats(p){
+  const rc=gCount(p,0);                                       // f=0 의 서로 다른 근의 개수
+  const zeroCrit=p.crit.filter(k=>k.v===0).length;            // f=0 이면서 f'=0 인 점
+  const zeroExt=p.crit.filter(k=>k.type!=="none"&&k.v===0).length;
+  const nExt=p.crit.filter(k=>k.type!=="none").length;
+  const nCrit=rc+nExt-zeroExt;                                // |f| 의 임계점 (min,max,… 교대)
+  return {nonDiff:rc-zeroCrit,max:(nCrit-1)/2,min:(nCrit+1)/2,nCrit,rootCount:rc};
+}
+function evenStats(p){
+  const pos=p.crit.filter(k=>k.type!=="none"&&k.x>1e-12).length;
+  return {ext:2*pos+1,nonDiff:pEval(pDeriv(p.co),0)!==0?1:0};
+}
+function bitangent(p){
+  if(p.co.length-1!==4)return {exists:false};
+  const c4=p.co[0],c3=p.co[1],c2=p.co[2],c1=p.co[3],c0=p.co[4];
+  const sig=-c3/(2*c4),pi=(c2/c4-sig*sig)/2;
+  if(sig*sig-4*pi<=1e-12)return {exists:false,sum:0,m:0,n:0};
+  const r=Math.sqrt(sig*sig-4*pi);
+  return {exists:true,sum:sig,m:c1+2*c4*sig*pi,n:c0-c4*pi*pi,pts:[(sig-r)/2,(sig+r)/2]};
+}
+
+/* ================= 삼차 ================= */
+function build3(a,m,k,n,id){
+  const d=k<0?Math.sqrt(-k):0,hasExt=k<0;
+  const co=[a,-3*a*m,3*a*(m*m+k),-a*m*m*m-3*a*k*m+n];
+  const p={deg:3,id,fam:"cubic",a,m,k,n,d,hasExt,co,
+    c3:co[0],c2:co[1],c1:co[2],c0:co[3],
+    f:x=>{const t=x-m;return a*t*t*t+3*a*k*t+n;}};
+  if(hasExt){
+    const cube=2*a*d*d*d,vL=n+cube,vR=n-cube;
+    if(a>0){p.maxX=m-d;p.maxY=vL;p.minX=m+d;p.minY=vR;}
+    else{p.maxX=m+d;p.maxY=vR;p.minX=m-d;p.minY=vL;}
+    p.vTop=Math.max(vL,vR);p.vBot=Math.min(vL,vR);
+    p.crossMax=p.maxX===m-d?m+2*d:m-2*d;
+    p.crossMin=p.minX===m-d?m+2*d:m-2*d;
+    p.intCount=p.vTop-p.vBot-1;
+    p.crit=[{x:m-d,v:vL,type:a>0?"max":"min"},{x:m+d,v:vR,type:a>0?"min":"max"}];
+  }else{
+    p.intCount=0;
+    p.crit=k===0?[{x:m,v:n,type:"none"}]:[];
+  }
+  p.infl=[m];
+  p.cross=c=>{if(!hasExt)return 1;if(c>p.vTop||c<p.vBot)return 1;if(c===p.vTop||c===p.vBot)return 2;return 3;};
+  const A=absStats(p);p.absNonDiff=A.nonDiff;p.absMax=A.max;p.absMin=A.min;p.rootCount=A.rootCount;
+  p.absTop=hasExt?Math.max(Math.abs(p.vTop),Math.abs(p.vBot)):null;
+  const E=evenStats(p);p.evenExt=E.ext;p.evenNonDiff=E.nonDiff;p.f0=p.f(0);
+  p.gJumps=gJumps(p);p.gSpan=gSpanFor(p,3);
+
+  p.h=t=>{
+    const A2=p.c3,B=p.c2,C=p.c1-t,D=p.c0;
+    const T=[18*A2*B*C*D,-4*B*B*B*D,B*B*C*C,-4*A2*C*C*C,-27*A2*A2*D*D];
+    const v=T.reduce((s,x)=>s+x,0),sc=T.reduce((s,x)=>s+Math.abs(x),0);
+    const eps=1e-9*sc+1e-12;
+    if(v>eps)return 3;if(v<-eps)return 1;
+    return Math.abs(B*B-3*A2*C)<=1e-7*(B*B+Math.abs(3*A2*C)+1)?1:2;
+  };
+  p.tanPts=pRoots([2*p.c3,p.c2,0,-p.c0]);
+  const fp=s=>3*p.c3*s*s+2*p.c2*s+p.c1;
+  const cands=uniq(p.tanPts.map(fp),1e-6);
+  const spread=cands.length>1?cands[cands.length-1]-cands[0]:1;
+  const dl=Math.max(1e-4,spread*1e-3);
+  p.hBounds=cands.filter(t=>p.h(t)!==p.h(t-dl)||p.h(t)!==p.h(t+dl));
+  p.hJumps=p.hBounds.length;
+  p.hSum=p.hBounds.reduce((s,x)=>s+x,0);
+  p.hSumInt=isInt(p.hSum)?Math.round(p.hSum):null;
+  p.h0=p.h(0);
+
+  const rnd=mulberry32(id*7919+13);
+  if(hasExt){
+    const t=rnd();
+    p.K=t<0.22?p.vTop:t<0.44?p.vBot:t<0.62?p.vTop+1+Math.floor(rnd()*2)
+      :t<0.80?p.vBot-1-Math.floor(rnd()*2):Math.round((p.vTop+p.vBot)/2);
+    const cd=[0,Math.max(0,p.vTop),Math.abs(p.vBot),Math.max(1,Math.round(p.absTop/2))]
+      .filter((v,i,ar)=>isInt(v)&&v>=0&&ar.indexOf(v)===i);
+    p.K5=cd[Math.floor(rnd()*cd.length)];
+    p.T7=Math.round(p.vBot+rnd()*(p.vTop-p.vBot));
+  }else{p.K=n+(k===0?0:2);p.K5=[0,2,Math.abs(n)+1][Math.floor(rnd()*3)];p.T7=n;}
+  p.absRoots=p.K5===0?p.cross(0):p.cross(p.K5)+p.cross(-p.K5);
+  return p;
+}
+
+/* ================= 사차 ================= */
+function build4(sp,id){
+  let co,crit,infl,label,extra={};
+  if(sp.fam==="A"){
+    const a=sp.a,c=sp.c,d=sp.d,e=sp.e;
+    co=[a,-4*a*c,6*a*c*c-2*a*d*d,-4*a*c*c*c+4*a*c*d*d,a*c*c*c*c-2*a*d*d*c*c+e];
+    const vAx=e,vSide=e-a*d*d*d*d;
+    crit=[{x:c-d,v:vSide,type:a>0?"min":"max"},{x:c,v:vAx,type:a>0?"max":"min"},{x:c+d,v:vSide,type:a>0?"min":"max"}];
+    infl=[c-d/S3,c+d/S3];
+    label="대칭형 W";
+    extra={c,d,e,vAx,vSide,ratio:"A",N:3*d*d};
+  }else if(sp.fam==="B"){
+    const a=sp.a,al=sp.al,L=sp.L,be=al+L;
+    const p3=[1,-3*al,3*al*al,-(al*al*al)];
+    co=[a,a*(p3[1]-be),a*(p3[2]-be*p3[1]),a*(p3[3]-be*p3[2]),a*(-be*p3[3])];
+    const xe=al+3*L/4,ve=pEval(co,xe);
+    crit=[{x:al,v:0,type:"none"},{x:xe,v:ve,type:a>0?"min":"max"}];
+    infl=[al,al+L/2];
+    label="삼중근형";
+    extra={al,be,L,xe,ve,ratio:"B"};
+  }else if(sp.fam==="C"){
+    const a=sp.a,r=sp.r,S=r[0]+r[1]+r[2],s=S/3;
+    const P=r[0]*r[1]+r[1]*r[2]+r[0]*r[2],Q=r[0]*r[1]*r[2];
+    co=[a,-4*a*s,2*a*P,-4*a*Q,sp.C0];
+    crit=r.map((x,i)=>({x,v:pEval(co,x),type:(i===1)===(a>0)?"max":"min"}));
+    const disc=Math.sqrt(S*S-3*P);
+    infl=[(S-disc)/3,(S+disc)/3];
+    label="비대칭 3극점";
+    extra={r,S,P,Q,ratio:null};
+  }else{
+    const a=sp.a,c=sp.c,b=sp.b,e=sp.e;
+    co=[a,-4*a*c,6*a*c*c+b,-4*a*c*c*c-2*b*c,a*c*c*c*c+b*c*c+e];
+    crit=[{x:c,v:e,type:a>0?"min":"max"}];
+    infl=[];
+    label=b===0?"사중근형":"극값 1개형";
+    extra={c,b,e,ratio:null};
+  }
+  const p={deg:4,id,fam:sp.fam,co,crit,infl,label,f:x=>pEval(co,x)};
+  Object.assign(p,extra);
+  p.nMax=crit.filter(k=>k.type==="max").length;
+  p.nMin=crit.filter(k=>k.type==="min").length;
+  p.nExt=p.nMax+p.nMin;
+  p.extSum=crit.filter(k=>k.type!=="none").reduce((s,k)=>s+k.x,0);
+  p.inflSum=infl.reduce((s,x)=>s+x,0);
+  p.extMinVal=Math.min.apply(null,crit.filter(k=>k.type!=="none").map(k=>k.v));
+  const A=absStats(p);p.absNonDiff=A.nonDiff;p.absMax=A.max;p.absMin=A.min;p.rootCount=A.rootCount;
+  const E=evenStats(p);p.evenExt=E.ext;p.evenNonDiff=E.nonDiff;p.f0=p.f(0);
+  p.bt=bitangent(p);
+  p.gJumps=gJumps(p);p.gSpan4=gSpanFor(p,4);
+  p.int4=intCountFor(p,4);
+  const vs=critVals(p);
+  const rnd=mulberry32(id*104729+7);
+  const cd=[vs[0],vs[vs.length-1],vs[0]-1,vs[vs.length-1]+1];
+  if(vs.length>1)cd.push(Math.round((vs[0]+vs[vs.length-1])/2));
+  p.K=cd[Math.floor(rnd()*cd.length)];
+  p.T7=cd[Math.floor(rnd()*cd.length)];
+  const tops=uniq([0,Math.abs(vs[0]),Math.abs(vs[vs.length-1]),Math.max(1,Math.round(Math.abs(vs[0])/2))],1e-9).filter(isInt);
+  p.K5=tops[Math.floor(rnd()*tops.length)];
+  p.absRoots=p.K5===0?gCount(p,0):gCount(p,p.K5)+gCount(p,-p.K5);
+  return p;
+}
+
+/* ================= 풀 ================= */
+const POOL=(function(){
+  /* --- 삼차 --- */
+  const raw=[],seen=new Set();
+  const push=(a,m,k,n)=>{const key=[a,m,k,n].join(",");if(!seen.has(key)){seen.add(key);raw.push([a,m,k,n]);}};
+  const ms=[-2,-1,0,1,2];let i=0;
+  for(const a of [1,-1,2,-2,3,-3])for(const d of [1,2,3]){
+    const S=2*Math.abs(a)*d*d*d;if(S>54)continue;
+    for(const cat of ["sym","tan+","tan-","one","off"]){
+      const m=ms[i++%5];
+      const n=cat==="sym"?0:cat==="tan+"?S:cat==="tan-"?-S:cat==="one"?S+2:Math.max(1,Math.floor(S/2));
+      push(a,m,-d*d,n);
+    }
+  }
+  const flatS=[];
+  for(const a of [1,-1,2,-2])for(const mn of [[0,0],[1,-2],[-1,3]])flatS.push([a,mn[0],0,mn[1]]);
+  for(const a of [1,-1])for(const k of [1,2])for(const mn of [[0,0],[1,2]])flatS.push([a,mn[0],k,mn[1]]);
+  const origS=[];
+  for(const a of [1,-1,2,-2,3,-3])for(const m of [-2,-1,0,1,2])for(const d of [1,2,3]){
+    const k=-d*d,n=a*m*(m*m+3*k);
+    if(-a*m*m*m-3*a*k*m+n!==0)continue;
+    const S=2*Math.abs(a)*d*d*d;
+    const vT=Math.max(n+2*a*d*d*d,n-2*a*d*d*d),vB=Math.min(n+2*a*d*d*d,n-2*a*d*d*d);
+    if(S>54||Math.abs(n)>60||Math.abs(vT)>90||Math.abs(vB)>90)continue;
+    if(!isInt(3*a*(m*m+k)-(9*a*a*m*m)/(4*a)))continue;
+    origS.push([a,m,k,n]);
+  }
+  const ext=raw.map((r,j)=>build3(r[0],r[1],r[2],r[3],j+1));
+  const flat=flatS.map((r,j)=>build3(r[0],r[1],r[2],r[3],1000+j));
+  const orig=origS.map((r,j)=>build3(r[0],r[1],r[2],r[3],2000+j));
+
+  /* --- 사차 --- */
+  const q=[];let qid=3000;
+  const seen4=new Set();
+  const add=sp=>{
+    const p=build4(sp,qid);
+    const key=p.co.join(",");
+    if(seen4.has(key))return;
+    if(!p.co.every(isInt))return;
+    if(!isInt(p.extSum)||!isInt(p.inflSum)||!isInt(p.extMinVal))return;
+    if(p.bt.exists&&(!isInt(p.bt.m)||!isInt(p.bt.n)||!isInt(p.bt.sum)))return;
+    if(Math.abs(p.extMinVal)>600)return;
+    seen4.add(key);p.id=qid++;q.push(p);
+  };
+  for(const a of [1,-1,2,-2])for(const c of [-1,0,1])for(const d of [1,2,3]){
+    if(Math.abs(a)*Math.pow(d,4)>82)continue;
+    const ad=a*Math.pow(d,4);
+    for(const e of [0,ad,Math.round(ad/2),ad+2*Math.sign(a),-2*Math.sign(a)])
+      add({fam:"A",a,c,d,e});
+  }
+  for(const a of [1,-1,2,-2])for(const al of [-2,-1,0,1])for(const L of [4])add({fam:"B",a,al,L});
+  for(const a of [1,-1])for(const al of [-1,0])add({fam:"B",a,al,L:8});
+  const trips=[[-2,1,4],[-1,0,4],[-3,1,2],[-1,1,3],[0,1,2],[-4,0,1],[-2,-1,0],[1,2,3],[-4,1,3],[-3,-1,1],[-1,2,5],[-3,2,4]];
+  for(const a of [1,-1])for(const r of trips){
+    if((r[0]+r[1]+r[2])%3!==0)continue;
+    for(const C0 of [0,7,-9])add({fam:"C",a,r,C0});
+  }
+  for(const a of [1,-1,2,-2])for(const c of [-1,0,1])for(const bb of [0,1,3])for(const e of [0,2,-2])
+    add({fam:"D",a,c,b:a*bb,e});
+
+  return {ext,flat,orig,all:ext.concat(flat),q,
+    qA:q.filter(p=>p.fam==="A"),qB:q.filter(p=>p.fam==="B"),
+    qC:q.filter(p=>p.fam==="C"),qD:q.filter(p=>p.fam==="D")};
+})();
+document.getElementById("poolsize").textContent="삼차 "+(POOL.all.length+POOL.orig.length)+" · 사차 "+POOL.q.length;
+
+/* ================= 상태 ================= */
+const LS="polyDrill.v4";
+let rec=(()=>{try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return{}}})();
+rec.correct=rec.correct||0;rec.total=rec.total||0;rec.streak=rec.streak||0;rec.bank=rec.bank||[];
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(rec))}catch(e){}};
+const $=id=>document.getElementById(id);
+const on=id=>$(id).checked;
+const deg=()=>on("deg4")?4:3;
+function paintStats(){
+  $("stCorrect").textContent=rec.correct;$("stTotal").textContent=rec.total;
+  $("stRate").textContent=rec.total?Math.round(rec.correct/rec.total*100)+"%":"—";
+  $("stStreak").textContent=rec.streak;
+}
+paintStats();
+
+function syncChips(){
+  for(const el of document.querySelectorAll(".chip"))
+    el.classList.toggle("on",el.querySelector("input").checked);
+  const d=deg();
+  $("rowFam").hidden=d!==4;
+  for(const el of document.querySelectorAll(".chip[data-deg]"))
+    el.style.display=(+el.dataset.deg===d)?"":"none";
+}
+
+let cur=null,graded=false,items=[];
+
+function pool4(){
+  if(on("famA"))return POOL.qA;
+  if(on("famB"))return POOL.qB;
+  if(on("famC"))return POOL.qC;
+  if(on("famD"))return POOL.qD;
+  return POOL.q;
+}
+function nextProblem(){
+  syncChips();
+  let pool,note="";
+  if(deg()===4){
+    pool=pool4();
+    if(on("tR"))note="비율관계는 대칭형·삼중근형에서만 성립합니다. 다른 계열은 「해당 없음」이 정답.";
+  }else if(on("t8")){pool=POOL.orig;note="유형 h(t) 사용 중 — 원점을 지나는 함수만 출제합니다.";}
+  else pool=on("noext")?POOL.all:POOL.ext;
+  if(on("wrongonly")){
+    const set=new Set(rec.bank),sub=pool.filter(p=>set.has(p.id));
+    if(sub.length)pool=sub;else note=(note?note+" ":"")+"보관된 오답이 없어 전체에서 출제합니다.";
+  }
+  $("poolNote").textContent=note;
+  $("bankInfo").textContent=rec.bank.length?("오답 보관 "+rec.bank.length+"문제"):"";
+  let cand=pool[Math.floor(Math.random()*pool.length)];
+  if(cur&&pool.length>1)while(cand.id===cur.id)cand=pool[Math.floor(Math.random()*pool.length)];
+  cur=cand;graded=false;render();
+}
+
+/* ================= 문항 ================= */
+const box=(label,key)=>'<span class="f">'+label+'<input type="number" step="1" data-k="'+key+'"></span>';
+const naBox=(key,text)=>'<span class="f"><label class="chk"><input type="checkbox" data-k="'+key+'">'+text+'</label></span>';
+
+function render(){
+  const p=cur;
+  $("qno").textContent="#"+p.id;
+  $("qtag").textContent=p.deg===3
+    ?((p.hasExt?"삼차 · 극점 간격 "+(2*p.d):"삼차 · 극값 없음")+(p.c0===0?" · 원점 통과":""))
+    :("사차 · "+p.label);
+  $("fx").innerHTML="<i>f</i>(<i>x</i>) = "+pStr(p.co);
+  items=[];let h="";
+
+  if(on("t1")){
+    h+='<div class="q"><div class="qt">유형 1 — 극점 · 변곡점</div>';
+    if(p.deg===3){
+      if(p.hasExt){
+        h+='<div class="qbody">극대점과 극소점의 좌표, 변곡점의 좌표를 구하세요.</div><div class="fields">'
+         +box("극대 <span class='math'><i>x</i></span> =","maxX")+box("극댓값 =","maxY")
+         +box("극소 <span class='math'><i>x</i></span> =","minX")+box("극솟값 =","minY")
+         +box("변곡점 <span class='math'><i>x</i></span> =","infX")+box("변곡점 <span class='math'><i>y</i></span> =","infY")+'</div>';
+        items.push({k:"maxX",v:p.maxX},{k:"maxY",v:p.maxY},{k:"minX",v:p.minX},{k:"minY",v:p.minY},{k:"infX",v:p.m},{k:"infY",v:p.n});
+      }else{
+        h+='<div class="qbody">극값의 개수와 변곡점의 좌표를 구하세요.</div><div class="fields">'
+         +box("극값의 개수 =","nExt")+box("변곡점 <span class='math'><i>x</i></span> =","infX")+box("변곡점 <span class='math'><i>y</i></span> =","infY")+'</div>';
+        items.push({k:"nExt",v:0},{k:"infX",v:p.m},{k:"infY",v:p.n});
+      }
+    }else{
+      h+='<div class="qbody">극댓값·극솟값을 갖는 점의 개수, 극점의 <span class="math"><i>x</i></span> 좌표의 합, 변곡점의 개수와 <span class="math"><i>x</i></span> 좌표의 합, 그리고 극값 중 가장 작은 값을 구하세요.</div><div class="fields">'
+       +box("극대점 개수 =","nMax")+box("극소점 개수 =","nMin")+box("극점 <span class='math'><i>x</i></span> 합 =","exSum")
+       +box("변곡점 개수 =","nInf")+box("변곡점 <span class='math'><i>x</i></span> 합 =","inSum")+box("극값의 최소 =","exMin")+'</div>';
+      items.push({k:"nMax",v:p.nMax},{k:"nMin",v:p.nMin},{k:"exSum",v:p.extSum},
+        {k:"nInf",v:p.infl.length},{k:"inSum",v:Math.round(p.inflSum)},{k:"exMin",v:p.extMinVal});
+    }
+    h+='</div>';
+  }
+
+  if(on("t2")){
+    const tgt=p.deg===3?3:4;
+    h+='<div class="q"><div class="qt">유형 2 — 수평선과의 교점</div>'
+     +'<div class="qbody">직선 <span class="math"><i>y</i> = '+sg(p.K)+'</span> 과 만나는 서로 다른 점의 개수, 그리고 <span class="math"><i>y</i> = <i>k</i></span> 가 <b>서로 다른 '+tgt+'개 점</b>에서 만나도록 하는 정수 <span class="math"><i>k</i></span> 의 개수를 구하세요.</div>'
+     +'<div class="fields">'+box("교점 개수 =","cnt")+box("정수 <span class='math'><i>k</i></span> 개수 =","kcnt")+'</div></div>';
+    items.push({k:"cnt",v:p.deg===3?p.cross(p.K):gCount(p,p.K)},
+      {k:"kcnt",v:p.deg===3?p.intCount:p.int4});
+  }
+
+  if(p.deg===3&&on("t3")){
+    h+='<div class="q"><div class="qt">유형 3 — 1 : 1 : 1 : 1</div>';
+    if(p.hasExt){
+      h+='<div class="qbody">극댓값을 지나는 수평선이 곡선과 <b>다시</b> 만나는 점, 극솟값을 지나는 수평선이 곡선과 다시 만나는 점의 <span class="math"><i>x</i></span> 좌표를 구하세요.</div>'
+       +'<div class="fields">'+box("극댓값 쪽 <span class='math'><i>x</i></span> =","cMax")+box("극솟값 쪽 <span class='math'><i>x</i></span> =","cMin")+'</div>';
+      items.push({k:"cMax",v:p.crossMax},{k:"cMin",v:p.crossMin});
+    }else{
+      h+='<div class="qbody">극댓값을 지나는 수평선을 그을 수 있는지 판단하세요.</div><div class="fields">'+naBox("na3","극값이 없어 해당 없음")+'</div>';
+      items.push({k:"na3",v:1,bool:true});
+    }
+    h+='</div>';
+  }
+  if(p.deg===3&&on("t4")){
+    h+='<div class="q"><div class="qt">유형 4 — 1 : √3</div>';
+    if(p.hasExt){
+      h+='<div class="qbody">변곡점을 지나는 수평선이 곡선과 만나는 세 점 중 <span class="math"><i>x</i></span> 좌표가 가장 큰 점을 <span class="math"><i>x</i> = <i>p</i> + <i>q</i>√3</span> 꼴로 나타내세요.</div>'
+       +'<div class="fields">'+box("<span class='math'><i>p</i></span> =","p4")+box("<span class='math'><i>q</i></span> =","q4")+'</div>';
+      items.push({k:"p4",v:p.m},{k:"q4",v:p.d});
+    }else{
+      h+='<div class="qbody">변곡점을 지나는 수평선과 곡선의 교점 개수를 구하세요.</div><div class="fields">'+box("교점 개수 =","c4")+'</div>';
+      items.push({k:"c4",v:1});
+    }
+    h+='</div>';
+  }
+
+  if(p.deg===4&&on("tR")){
+    h+='<div class="q"><div class="qt">유형 R — 사차 비율관계</div>';
+    if(p.fam==="A"){
+      h+='<div class="qbody">대칭축 <span class="math"><i>x</i> = '+sg(p.c)+'</span> 에서의 극값은 <span class="math">'+sg(p.vAx)+'</span> 입니다. 직선 <span class="math"><i>y</i> = '+sg(p.vAx)+'</span> 이 곡선과 만나는 점 중 <span class="math"><i>x</i></span> 좌표가 가장 큰 점을 <span class="math"><i>p</i> + <i>q</i>√2</span> 꼴로, 변곡점의 <span class="math"><i>x</i></span> 좌표 중 큰 것을 <span class="math"><i>r</i> + √<i>N</i> / 3</span> 꼴로 나타내세요.</div>'
+       +'<div class="fields">'+box("<span class='math'><i>p</i></span> =","rp")+box("<span class='math'><i>q</i></span> =","rq")
+       +box("<span class='math'><i>r</i></span> =","rr")+box("<span class='math'><i>N</i></span> =","rN")+'</div>';
+      items.push({k:"rp",v:p.c},{k:"rq",v:p.d},{k:"rr",v:p.c},{k:"rN",v:p.N});
+    }else if(p.fam==="B"){
+      h+='<div class="qbody"><span class="math"><i>x</i> = '+sg(p.al)+'</span> 이 삼중근입니다. 극점의 <span class="math"><i>x</i></span> 좌표와 두 변곡점의 <span class="math"><i>x</i></span> 좌표를 구하세요. (2 : 1 : 1)</div>'
+       +'<div class="fields">'+box("극점 <span class='math'><i>x</i></span> =","bx")+box("변곡점 작은 것 =","bi1")+box("변곡점 큰 것 =","bi2")+'</div>';
+      items.push({k:"bx",v:p.xe},{k:"bi1",v:Math.min(p.al,p.al+p.L/2)},{k:"bi2",v:Math.max(p.al,p.al+p.L/2)});
+    }else{
+      h+='<div class="qbody">이 함수에 <span class="math">1 : √2</span> 또는 <span class="math">2 : 1 : 1</span> 비율관계를 쓸 수 있는지 판단하세요.</div>'
+       +'<div class="fields">'+naBox("naR","대칭형·삼중근형이 아니어서 해당 없음")+'</div>';
+      items.push({k:"naR",v:1,bool:true});
+    }
+    h+='</div>';
+  }
+  if(p.deg===4&&on("tW")){
+    h+='<div class="q"><div class="qt">유형 W — 이중접선</div>'
+     +'<div class="qbody">곡선에 두 점에서 접하는 직선(이중접선)이 존재하면 1, 없으면 0 을 쓰고, 존재하는 경우 그 직선 <span class="math"><i>y</i> = <i>mx</i> + <i>n</i></span> 의 <span class="math"><i>m</i>, <i>n</i></span> 과 두 접점의 <span class="math"><i>x</i></span> 좌표의 합을 구하세요. (없으면 모두 0)</div>'
+     +'<div class="fields">'+box("존재 =","we")+box("<span class='math'><i>m</i></span> =","wm")+box("<span class='math'><i>n</i></span> =","wn")+box("접점 <span class='math'><i>x</i></span> 합 =","ws")+'</div></div>';
+    items.push({k:"we",v:p.bt.exists?1:0},{k:"wm",v:p.bt.exists?Math.round(p.bt.m):0},
+      {k:"wn",v:p.bt.exists?Math.round(p.bt.n):0},{k:"ws",v:p.bt.exists?Math.round(p.bt.sum):0});
+  }
+
+  if(on("t5")){
+    h+='<div class="q"><div class="qt abs">유형 5 — <span class="math"><i>y</i> = |<i>f</i>(<i>x</i>)|</span></div>'
+     +'<div class="qbody"><span class="math"><i>y</i> = |<i>f</i>(<i>x</i>)|</span> 에 대하여 미분가능하지 않은 점의 개수와 극댓값의 개수를 구하고, <span class="math">|<i>f</i>(<i>x</i>)| = '+p.K5+'</span> 의 서로 다른 실근의 개수를 구하세요.</div>'
+     +'<div class="fields">'+box("미분불가능 점 =","nd5")+box("극댓값 개수 =","mx5")+box("실근 개수 =","rt5")+'</div></div>';
+    items.push({k:"nd5",v:p.absNonDiff},{k:"mx5",v:p.absMax},{k:"rt5",v:p.absRoots});
+  }
+  if(on("t6")){
+    h+='<div class="q"><div class="qt abs">유형 6 — <span class="math"><i>y</i> = <i>f</i>(|<i>x</i>|)</span></div>'
+     +'<div class="qbody"><span class="math"><i>y</i> = <i>f</i>(|<i>x</i>|)</span> 에 대하여 극값의 개수와 미분가능하지 않은 점의 개수를 구하세요.</div>'
+     +'<div class="fields">'+box("극값의 개수 =","ex6")+box("미분불가능 점 =","nd6")+'</div></div>';
+    items.push({k:"ex6",v:p.evenExt},{k:"nd6",v:p.evenNonDiff});
+  }
+  if(on("t7")){
+    const tgt=p.deg===3?3:4;
+    h+='<div class="q"><div class="qt cnt">유형 7 — <span class="math"><i>g</i>(<i>t</i>)</span> : <span class="math"><i>f</i>(<i>x</i>)=<i>t</i></span> 의 실근 개수</div>'
+     +'<div class="qbody"><span class="math"><i>g</i>('+sg(p.T7)+')</span> 의 값, <span class="math"><i>g</i>(<i>t</i>)</span> 가 불연속인 <span class="math"><i>t</i></span> 의 개수, <span class="math"><i>g</i>(<i>t</i>) = '+tgt+'</span> 인 범위 <span class="math">&alpha; &lt; <i>t</i> &lt; &beta;</span> 의 <span class="math">&beta; &minus; &alpha;</span> 를 구하세요. (없으면 0)</div>'
+     +'<div class="fields">'+box("<span class='math'><i>g</i>("+sg(p.T7)+")</span> =","g7")+box("불연속 개수 =","gj")+box("<span class='math'>&beta;&minus;&alpha;</span> =","gs")+'</div></div>';
+    items.push({k:"g7",v:gCount(p,p.T7)},{k:"gj",v:p.gJumps},{k:"gs",v:p.deg===3?p.gSpan:p.gSpan4});
+  }
+  if(p.deg===3&&on("t8")){
+    h+='<div class="q"><div class="qt cnt">유형 8 — <span class="math"><i>h</i>(<i>t</i>)</span> : <span class="math"><i>f</i>(<i>x</i>)=<i>tx</i></span> 의 실근 개수</div>'
+     +'<div class="qbody"><span class="math"><i>h</i>(0)</span> 의 값, <span class="math"><i>h</i>(<i>t</i>)</span> 가 불연속인 <span class="math"><i>t</i></span> 의 개수, 그 <span class="math"><i>t</i></span> 값들의 합을 구하세요.</div>'
+     +'<div class="fields">'+box("<span class='math'><i>h</i>(0)</span> =","h0")+box("불연속 개수 =","hj")+box("합 =","hs")+'</div></div>';
+    items.push({k:"h0",v:p.h0},{k:"hj",v:p.hJumps},{k:"hs",v:p.hSumInt});
+  }
+  if(!items.length)h='<div class="q"><div class="qbody">문항 유형을 하나 이상 선택하세요.</div></div>';
+
+  $("qs").innerHTML=h;
+  $("gradeBtn").disabled=!items.length;
+  $("nextBtn").disabled=true;
+  $("graphBox").innerHTML='<div class="veil">채점하면 개형이 공개됩니다.<br>먼저 종이에 그려보세요.</div>';
+  $("ovBox").style.display="none";
+  $("absBox").innerHTML="";$("tableBox").innerHTML="";
+  const first=$("qs").querySelector("input");
+  if(first)first.focus();
+}
+
+/* ================= 채점 ================= */
+function grade(){
+  if(graded||!items.length)return;
+  graded=true;let ok=0;
+  for(const it of items){
+    const el=$("qs").querySelector('[data-k="'+it.k+'"]');
+    if(!el)continue;
+    const good=it.bool?((el.checked?1:0)===it.v):(el.value.trim()!==""&&Number(el.value)===it.v);
+    if(it.bool)el.parentElement.style.color=good?"var(--ok)":"var(--mark)";
+    else el.classList.add(good?"good":"bad");
+    if(good)ok++;
+  }
+  rec.total+=items.length;rec.correct+=ok;
+  if(ok===items.length){rec.streak++;rec.bank=rec.bank.filter(x=>x!==cur.id);}
+  else{rec.streak=0;if(rec.bank.indexOf(cur.id)<0)rec.bank.push(cur.id);}
+  save();paintStats();
+
+  const v=document.createElement("div");
+  v.className="verdict "+(ok===items.length?"ok":"no");
+  v.textContent=ok===items.length?"전부 정답":ok+" / "+items.length+" 정답";
+  $("qs").appendChild(v);
+  const w=document.createElement("div");w.className="why";w.innerHTML=explain();$("qs").appendChild(w);
+
+  $("graphBox").innerHTML=plot(cur,"base");
+  $("ovBox").style.display="flex";
+  let ab="";
+  if(on("t5"))ab+='<div class="gwrap"><p class="gcap"><b>y = |f(x)|</b> — 빨간 ○ 는 미분불가능한 점</p>'+plot(cur,"abs")+'</div>';
+  if(on("t6"))ab+='<div class="gwrap"><p class="gcap"><b>y = f(|x|)</b> — y축 대칭</p>'+plot(cur,"even")+'</div>';
+  if(on("t7"))ab+='<div class="gwrap"><p class="gcap"><b>g(t)</b> — f(x)=t 의 실근 개수 (● 포함 / ○ 제외)</p>'+plotG(cur)+'</div>';
+  if(cur.deg===3&&on("t8"))ab+='<div class="gwrap"><p class="gcap"><b>원점에서 그은 접선</b> — 접선의 기울기마다 h(t) 가 불연속</p>'+plot(cur,"orig")
+    +'<p class="gcap" style="margin-top:12px"><b>h(t)</b> — f(x)=tx 의 실근 개수</p>'+plotH(cur)+'</div>';
+  $("absBox").innerHTML=ab;
+  $("tableBox").innerHTML=tableFor(cur);
+  $("nextBtn").disabled=false;$("nextBtn").focus();
+}
+
+function explain(){
+  const p=cur;let s='';
+  if(p.deg===3){
+    s+='정답 &nbsp;<span class="math">';
+    if(p.hasExt){
+      s+='극대 ('+sg(p.maxX)+', '+sg(p.maxY)+') &nbsp; 극소 ('+sg(p.minX)+', '+sg(p.minY)+') &nbsp; 변곡점 ('+sg(p.m)+', '+sg(p.n)+')</span>';
+      s+='<br>변곡점 기준 반간격 <span class="math"><i>d</i>='+p.d+'</span> → 극점 <span class="math">±'+p.d+'</span>, 변곡선 교점 <span class="math">±√3·'+p.d+'</span>, 극값선 교점 <span class="math">±'+(2*p.d)+'</span>';
+    }else{
+      s+='극값 없음 &nbsp; 변곡점 ('+sg(p.m)+', '+sg(p.n)+')</span><br><span class="math"><i>f</i>&prime;</span> 의 부호가 일정 → 단조'+(p.a>0?"증가":"감소");
+    }
+  }else{
+    s+='정답 &nbsp;<span class="math">극대 '+p.nMax+'개 / 극소 '+p.nMin+'개</span> &nbsp; 극점 : '
+     +p.crit.filter(k=>k.type!=="none").map(k=>'('+sg(k.x)+', '+sg(k.v)+')').join(', ');
+    if(p.crit.some(k=>k.type==="none"))
+      s+='<br><span class="math"><i>x</i> = '+sg(p.crit.find(k=>k.type==="none").x)+'</span> 은 <span class="math"><i>f</i>&prime;=0</span> 이지만 부호가 바뀌지 않아 극값이 아닙니다.';
+    s+='<br>변곡점 '+p.infl.length+'개'+(p.infl.length?' : <span class="math"><i>x</i> = '+p.infl.map(num).join(', ')+'</span> (합 '+num(p.inflSum)+')':' — <span class="math"><i>f</i>&Prime;</span> 의 부호가 바뀌지 않습니다');
+    if(p.fam==="A")s+='<br>대칭축에서 재면 <span class="math">변곡점 : 극소 : 극값선 교점 = 1/√3 : 1 : √2</span> &nbsp;(<span class="math"><i>d</i>='+p.d+'</span> 배)';
+    if(p.fam==="B")s+='<br><span class="math">'+sg(p.al)+'</span>(삼중근) → 변곡점 <span class="math">'+num(p.al+p.L/2)+'</span> → 극점 <span class="math">'+num(p.xe)+'</span> → <span class="math">'+num(p.be)+'</span> 이 <span class="math">2 : 1 : 1</span>';
+    if(p.bt.exists)s+='<br>이중접선 <span class="math"><i>y</i> = '+(p.bt.m===0?'':num(p.bt.m)+'<i>x</i> ')+(p.bt.m===0?num(p.bt.n):(p.bt.n<0?'&minus; '+Math.abs(p.bt.n):'+ '+p.bt.n))+'</span>, 접점 <span class="math"><i>x</i> = '+p.bt.pts.map(num).join(', ')+'</span> (합 '+num(p.bt.sum)+')';
+    else s+='<br>이중접선 없음 — <span class="math"><i>f</i>(<i>x</i>) &minus; (<i>mx</i>+<i>n</i>) = <i>a</i>(<i>x</i>&minus;<i>s</i>)<sup>2</sup>(<i>x</i>&minus;<i>u</i>)<sup>2</sup></span> 를 만족하는 서로 다른 실수 <span class="math"><i>s</i>, <i>u</i></span> 가 없습니다.';
+  }
+  if(on("t5"))s+='<br><b><span class="math">|<i>f</i>|</span></b> : 근 '+p.rootCount+'개 중 <span class="math"><i>f</i>&prime;≠0</span> 인 것 '+p.absNonDiff+'개에서만 꺾임 / 극댓값 '+p.absMax+'개 / <span class="math">|<i>f</i>|='+p.K5+'</span> 의 실근 '+p.absRoots+'개';
+  if(on("t6"))s+='<br><b><span class="math"><i>f</i>(|<i>x</i>|)</span></b> : <span class="math"><i>x</i>&gt;0</span> 쪽 극점 '+((p.evenExt-1)/2)+'개 → 대칭 후 <span class="math"><i>x</i>=0</span> 포함 극값 '+p.evenExt+'개, <span class="math"><i>f</i>&prime;(0)='+pEval(pDeriv(p.co),0)+'</span> 이므로 '+(p.evenNonDiff?'꺾임 1개':'매끄러움 0개');
+  if(on("t7"))s+='<br><b><span class="math"><i>g</i>(<i>t</i>)</span></b> : 극값 '+critVals(p).map(sg).join(', ')+' 에서 계단 → 불연속 '+p.gJumps+'개, <span class="math">&beta;&minus;&alpha; = '+(p.deg===3?p.gSpan:p.gSpan4)+'</span>';
+  if(p.deg===3&&on("t8")){
+    s+='<br><b><span class="math"><i>h</i>(<i>t</i>)</span></b> : <span class="math"><i>x</i>=0</span> 은 항상 근, 나머지는 이차식의 판별식으로 갈림. 불연속 <span class="math"><i>t</i></span> : '+p.hBounds.map(num).join(', ')+' (합 '+num(p.hSum)+')';
+    s+='<br>원점에서 그은 접선의 접점 <span class="math"><i>x</i></span> : '+p.tanPts.map(num).join(', ');
+  }
+  return s;
+}
+
+/* ================= 그래프 ================= */
+function plot(p,kind){
+  const W=560,H=kind==="base"?470:kind==="orig"?360:330;
+  const mL=44,mR=22,mT=kind==="base"?46:24,mB=kind==="base"?52:32;
+  let x0,x1,fn=p.f;
+  const feats=p.crit.map(k=>k.x).concat(p.infl);
+  if(p.deg===3&&p.hasExt)feats.push(p.m-2*p.d,p.m+2*p.d);
+  if(p.deg===4&&p.fam==="A")feats.push(p.c-S2*p.d,p.c+S2*p.d);
+  if(p.deg===4&&p.fam==="B")feats.push(p.al,p.be);
+  if(p.bt&&p.bt.exists)feats.push.apply(feats,p.bt.pts);
+  const fmin=feats.length?Math.min.apply(null,feats):-1,fmax=feats.length?Math.max.apply(null,feats):1;
+  const span=Math.max(fmax-fmin,1.6),pad=Math.max(0.8,span*0.28);
+  if(kind==="even"){
+    const R=Math.max(Math.abs(fmin),Math.abs(fmax))+pad;
+    x0=-R;x1=R;fn=x=>p.f(Math.abs(x));
+  }else if(kind==="orig"){
+    const xs=[0,fmin,fmax].concat(p.tanPts||[]);
+    x0=Math.min.apply(null,xs)-0.9;x1=Math.max.apply(null,xs)+0.9;
+  }else{
+    x0=fmin-pad;x1=fmax+pad;
+    if(kind==="abs")fn=x=>Math.abs(p.f(x));
+  }
+  const N=340,ys=[];
+  for(let i=0;i<=N;i++)ys.push(fn(x0+(x1-x0)*i/N));
+  let yMin=Math.min.apply(null,ys),yMax=Math.max.apply(null,ys);
+  if(kind==="orig"){yMin=Math.min(yMin,0);yMax=Math.max(yMax,0);}
+  const yp=(yMax-yMin)*0.10||1;yMin-=yp;yMax+=yp;
+  const px=x=>mL+(x-x0)/(x1-x0)*(W-mL-mR);
+  const py=y=>mT+(yMax-y)/(yMax-yMin)*(H-mT-mB);
+  const cy=y=>Math.min(H-mB,Math.max(mT,py(y)));
+
+  let g="";
+  for(let x=Math.ceil(x0);x<=Math.floor(x1);x++)
+    g+='<line x1="'+px(x)+'" y1="'+mT+'" x2="'+px(x)+'" y2="'+(H-mB)+'" stroke="var(--grid)" stroke-width=".5"/>';
+  const steps=[1,2,5,10,20,25,50,100,200,500];
+  const step=steps.filter(s=>(yMax-yMin)/s<=9)[0]||1000;
+  for(let y=Math.ceil(yMin/step)*step;y<=yMax;y+=step){
+    g+='<line x1="'+mL+'" y1="'+py(y)+'" x2="'+(W-mR)+'" y2="'+py(y)+'" stroke="var(--grid)" stroke-width=".5"/>';
+    g+='<text x="'+(mL-7)+'" y="'+(py(y)+4)+'" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="Cambria,serif">'+y+'</text>';
+  }
+  if(yMin<0&&yMax>0)g+='<line x1="'+mL+'" y1="'+py(0)+'" x2="'+(W-mR)+'" y2="'+py(0)+'" stroke="var(--ink)" stroke-width="1.2"/>';
+  else g+='<line x1="'+mL+'" y1="'+(H-mB)+'" x2="'+(W-mR)+'" y2="'+(H-mB)+'" stroke="var(--ink)" stroke-width="1.2"/>';
+  if(x0<0&&x1>0)g+='<line x1="'+px(0)+'" y1="'+mT+'" x2="'+px(0)+'" y2="'+(H-mB)+'" stroke="var(--ink)" stroke-width="1.2"/>';
+  for(let x=Math.ceil(x0);x<=Math.floor(x1);x++)if(x!==0)
+    g+='<text x="'+px(x)+'" y="'+(H-mB+16)+'" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="Cambria,serif">'+x+'</text>';
+  g+='<rect x="'+mL+'" y="'+mT+'" width="'+(W-mL-mR)+'" height="'+(H-mT-mB)+'" fill="none" stroke="var(--grid-strong)" stroke-width=".5"/>';
+
+  let ov="";
+  const ruler=(cx,unit,marks,labels,mode)=>{
+    const rY=H-22;let o="";
+    o+='<line x1="'+px(cx+unit*marks[0])+'" y1="'+rY+'" x2="'+px(cx+unit*marks[marks.length-1])+'" y2="'+rY+'" stroke="var(--hl-2)" stroke-width="1.2"/>';
+    for(const t of marks){
+      o+='<line x1="'+px(cx+unit*t)+'" y1="'+(rY-5)+'" x2="'+px(cx+unit*t)+'" y2="'+(rY+5)+'" stroke="var(--hl-2)" stroke-width="1.2"/>';
+      o+='<line x1="'+px(cx+unit*t)+'" y1="'+mT+'" x2="'+px(cx+unit*t)+'" y2="'+(rY-5)+'" stroke="var(--hl-2)" stroke-width=".7" stroke-dasharray="3 3" opacity=".7"/>';
+    }
+    for(let j=0;j<labels.length;j++){
+      if(!labels[j])continue;
+      const at=mode==="pos"?marks[j]:(marks[j]+marks[j+1])/2;
+      o+='<text x="'+px(cx+unit*at)+'" y="'+(rY-9)+'" text-anchor="middle" font-size="12" fill="var(--hl-2)" font-family="Cambria,serif">'+labels[j]+'</text>';
+    }
+    return o;
+  };
+  if(kind==="base"&&on("ov1")){
+    if(p.deg===3&&p.hasExt)ov+=ruler(p.m,p.d,[-2,-1,0,1,2],["1","1","1","1"],"seg");
+    if(p.deg===4&&p.fam==="A")ov+=ruler(p.c,p.d,[0,1/S3,1,S2],["","1/√3","1","√2"],"pos");
+    if(p.deg===4&&p.fam==="B")ov+=ruler(p.al,p.L/4,[0,2,3,4],["2","1","1"],"seg");
+  }
+  if(kind==="base"&&on("ov2")){
+    if(p.deg===3&&p.hasExt){
+      ov+='<line x1="'+px(p.maxX)+'" y1="'+py(p.maxY)+'" x2="'+px(p.crossMax)+'" y2="'+py(p.maxY)+'" stroke="var(--hl-2)" stroke-width="1" stroke-dasharray="5 4"/>';
+      ov+='<line x1="'+px(p.minX)+'" y1="'+py(p.minY)+'" x2="'+px(p.crossMin)+'" y2="'+py(p.minY)+'" stroke="var(--hl-2)" stroke-width="1" stroke-dasharray="5 4"/>';
+      ov+='<line x1="'+px(p.m-S3*p.d)+'" y1="'+py(p.n)+'" x2="'+px(p.m+S3*p.d)+'" y2="'+py(p.n)+'" stroke="var(--mark)" stroke-width="1" stroke-dasharray="5 4"/>';
+      for(const x of [p.m-S3*p.d,p.m+S3*p.d])ov+='<circle cx="'+px(x)+'" cy="'+py(p.n)+'" r="3.6" fill="var(--mark)"/>';
+    }
+    if(p.deg===4&&p.fam==="A"){
+      ov+='<line x1="'+px(p.c-S2*p.d)+'" y1="'+py(p.vAx)+'" x2="'+px(p.c+S2*p.d)+'" y2="'+py(p.vAx)+'" stroke="var(--mark)" stroke-width="1" stroke-dasharray="5 4"/>';
+      for(const x of [p.c-S2*p.d,p.c+S2*p.d])ov+='<circle cx="'+px(x)+'" cy="'+py(p.vAx)+'" r="3.6" fill="var(--mark)"/>';
+    }
+    for(const x of p.infl)
+      ov+='<circle cx="'+px(x)+'" cy="'+py(p.f(x))+'" r="4" fill="none" stroke="var(--curve)" stroke-width="1.8"/>';
+    if(p.bt&&p.bt.exists){
+      ov+='<line x1="'+px(x0)+'" y1="'+cy(p.bt.m*x0+p.bt.n)+'" x2="'+px(x1)+'" y2="'+cy(p.bt.m*x1+p.bt.n)+'" stroke="var(--curve-3)" stroke-width="1.4" stroke-dasharray="7 4"/>';
+      for(const s of p.bt.pts)ov+='<circle cx="'+px(s)+'" cy="'+py(p.f(s))+'" r="4.2" fill="var(--curve-3)"/>';
+    }
+  }
+  if(kind==="abs"&&p.K5>0){
+    ov+='<line x1="'+mL+'" y1="'+py(p.K5)+'" x2="'+(W-mR)+'" y2="'+py(p.K5)+'" stroke="var(--curve-2)" stroke-width="1" stroke-dasharray="6 4"/>';
+    ov+='<text x="'+(W-mR-4)+'" y="'+(py(p.K5)-5)+'" text-anchor="end" font-size="11" fill="var(--curve-2)" font-family="Cambria,serif">y = '+p.K5+'</text>';
+  }
+  if(kind==="orig"){
+    for(const s of p.tanPts){
+      const t=3*p.c3*s*s+2*p.c2*s+p.c1;
+      ov+='<line x1="'+px(x0)+'" y1="'+cy(t*x0)+'" x2="'+px(x1)+'" y2="'+cy(t*x1)+'" stroke="var(--curve-3)" stroke-width="1.2" stroke-dasharray="6 4"/>';
+      ov+='<circle cx="'+px(s)+'" cy="'+py(p.f(s))+'" r="4" fill="var(--curve-3)"/>';
+      ov+='<text x="'+px(s)+'" y="'+(py(p.f(s))-9)+'" text-anchor="middle" font-size="11" fill="var(--curve-3)" font-family="Cambria,serif">t='+num(t)+'</text>';
+    }
+    ov+='<circle cx="'+px(0)+'" cy="'+py(0)+'" r="3.4" fill="var(--ink)"/>';
+  }
+
+  let d="";
+  const col=kind==="base"||kind==="orig"?"var(--curve)":"var(--curve-2)";
+  for(let i=0;i<=N;i++){const x=x0+(x1-x0)*i/N;d+=(i?"L":"M")+px(x).toFixed(1)+" "+py(fn(x)).toFixed(1)+" ";}
+  let cv='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>';
+  if(kind==="base")
+    for(const k of p.crit)
+      cv+='<circle cx="'+px(k.x)+'" cy="'+py(k.v)+'" r="4.5" fill="'+(k.type==="none"?"var(--paper-2)":"var(--curve)")+'" stroke="var(--curve)" stroke-width="2"/>';
+  if(kind==="abs"){
+    const dco=pDeriv(p.co);
+    for(const r of pRoots(p.co)){
+      if(r<x0||r>x1)continue;
+      if(Math.abs(pEval(dco,r))>1e-6)
+        cv+='<circle cx="'+px(r)+'" cy="'+py(0)+'" r="5" fill="var(--paper-2)" stroke="var(--mark)" stroke-width="2"/>';
+    }
+  }
+  if(kind==="even")
+    cv+='<circle cx="'+px(0)+'" cy="'+py(p.f0)+'" r="5" fill="'+(p.evenNonDiff?"var(--paper-2)":"var(--curve-2)")+'" stroke="'+(p.evenNonDiff?"var(--mark)":"var(--curve-2)")+'" stroke-width="2"/>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="함수의 개형"><g>'+g+'</g><g>'+ov+'</g><g>'+cv+'</g></svg>';
+}
+
+function plotStep(segs,pts,opens,tLo,tHi,vMax){
+  const W=560,H=250,mL=42,mR=24,mT=22,mB=40,top=vMax+0.6;
+  const px=t=>mL+(t-tLo)/(tHi-tLo)*(W-mL-mR);
+  const py=v=>mT+(top-v)/top*(H-mT-mB);
+  let s="";
+  for(let v=0;v<=vMax;v++){
+    s+='<line x1="'+mL+'" y1="'+py(v)+'" x2="'+(W-mR)+'" y2="'+py(v)+'" stroke="var(--grid)" stroke-width=".5"/>';
+    s+='<text x="'+(mL-7)+'" y="'+(py(v)+4)+'" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="Cambria,serif">'+v+'</text>';
+  }
+  const tick=Math.max(1,Math.round((tHi-tLo)/8));
+  for(let t=Math.ceil(tLo/tick)*tick;t<=tHi;t+=tick){
+    s+='<line x1="'+px(t)+'" y1="'+mT+'" x2="'+px(t)+'" y2="'+(H-mB)+'" stroke="var(--grid)" stroke-width=".5"/>';
+    s+='<text x="'+px(t)+'" y="'+(H-mB+16)+'" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="Cambria,serif">'+t+'</text>';
+  }
+  s+='<line x1="'+mL+'" y1="'+py(0)+'" x2="'+(W-mR)+'" y2="'+py(0)+'" stroke="var(--ink)" stroke-width="1.2"/>';
+  s+='<text x="'+(W-mR)+'" y="'+(H-6)+'" text-anchor="end" font-size="11" fill="var(--ink-2)" font-family="Cambria,serif">t</text>';
+  for(const q of segs)
+    s+='<line x1="'+px(Math.max(q.a,tLo))+'" y1="'+py(q.v)+'" x2="'+px(Math.min(q.b,tHi))+'" y2="'+py(q.v)+'" stroke="var(--curve-3)" stroke-width="2.6"/>';
+  for(const o of opens)
+    s+='<circle cx="'+px(o.t)+'" cy="'+py(o.v)+'" r="4.6" fill="var(--paper-2)" stroke="var(--curve-3)" stroke-width="2"/>';
+  for(const q of pts){
+    s+='<line x1="'+px(q.t)+'" y1="'+py(0)+'" x2="'+px(q.t)+'" y2="'+py(q.v)+'" stroke="var(--curve-3)" stroke-width=".7" stroke-dasharray="3 3" opacity=".6"/>';
+    s+='<circle cx="'+px(q.t)+'" cy="'+py(q.v)+'" r="4.6" fill="var(--curve-3)"/>';
+    s+='<text x="'+px(q.t)+'" y="'+(py(0)+15)+'" text-anchor="middle" font-size="11" fill="var(--curve-3)" font-family="Cambria,serif">'+num(q.t)+'</text>';
+  }
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="근의 개수 그래프"><g>'+s+'</g></svg>';
+}
+
+function plotG(p){
+  const vs=critVals(p),vMax=p.deg;
+  if(!vs.length){const lo=-5,hi=5;return plotStep([{a:lo,b:hi,v:gCount(p,0)}],[],[],lo,hi,vMax);}
+  const span=vs[vs.length-1]-vs[0],pad=Math.max(1,Math.round(span*0.35)||2);
+  const lo=vs[0]-pad,hi=vs[vs.length-1]+pad;
+  const edges=[lo].concat(vs,[hi]),segs=[],pts=[],opens=[];
+  for(let i=0;i<edges.length-1;i++)segs.push({a:edges[i],b:edges[i+1],v:gCount(p,(edges[i]+edges[i+1])/2)});
+  for(const t of vs){
+    const v=gCount(p,t);pts.push({t,v});
+    for(const q of segs)if((Math.abs(q.a-t)<1e-9||Math.abs(q.b-t)<1e-9)&&q.v!==v)opens.push({t,v:q.v});
+  }
+  return plotStep(segs,pts,opens,lo,hi,vMax);
+}
+function plotH(p){
+  const B=p.hBounds.slice().sort((a,b)=>a-b);
+  if(!B.length){const lo=-5,hi=5;return plotStep([{a:lo,b:hi,v:p.h(0)}],[],[],lo,hi,3);}
+  const span=B.length>1?B[B.length-1]-B[0]:0,pad=Math.max(2,span*0.5);
+  const lo=Math.floor(B[0]-pad),hi=Math.ceil(B[B.length-1]+pad);
+  const edges=[lo].concat(B,[hi]),segs=[],pts=[],opens=[];
+  for(let i=0;i<edges.length-1;i++)segs.push({a:edges[i],b:edges[i+1],v:p.h((edges[i]+edges[i+1])/2)});
+  for(const t of B){
+    const v=p.h(t);pts.push({t,v});
+    for(const q of segs)if((Math.abs(q.a-t)<1e-9||Math.abs(q.b-t)<1e-9)&&q.v!==v)opens.push({t,v:q.v});
+  }
+  return plotStep(segs,pts,opens,lo,hi,3);
+}
+
+function tableFor(p){
+  const cs=p.crit;
+  if(!cs.length){
+    return '<table class="mono"><tr><th><i>x</i></th><td>(&minus;∞, ∞)</td></tr>'
+    +'<tr><th><i>f</i>&prime;(<i>x</i>)</th><td>'+(p.co[0]>0?"+":"&minus;")+'</td></tr>'
+    +'<tr><th><i>f</i>(<i>x</i>)</th><td>'+(p.co[0]>0?"↗":"↘")+'</td></tr></table>'
+    +'<div class="hint"><span class="math"><i>f</i>&prime;</span> 의 부호 변화가 없어 극값이 없습니다.</div>';
+  }
+  const dco=pDeriv(p.co);
+  const probe=[];
+  probe.push(cs[0].x-1);
+  for(let i=0;i<cs.length-1;i++)probe.push((cs[i].x+cs[i+1].x)/2);
+  probe.push(cs[cs.length-1].x+1);
+  const sgn=x=>pEval(dco,x)>0?"+":"&minus;";
+  const arw=x=>pEval(dco,x)>0?"↗":"↘";
+  let r1='<tr><th><i>x</i></th>',r2='<tr><th><i>f</i>&prime;(<i>x</i>)</th>',r3='<tr><th><i>f</i>(<i>x</i>)</th>';
+  for(let i=0;i<probe.length;i++){
+    r1+='<td>⋯</td>';r2+='<td>'+sgn(probe[i])+'</td>';r3+='<td>'+arw(probe[i])+'</td>';
+    if(i<cs.length){
+      r1+='<td>'+sg(cs[i].x)+'</td>';r2+='<td>0</td>';
+      r3+='<td>'+(cs[i].type==="none"?sg(cs[i].v):'<b>'+sg(cs[i].v)+'</b>')+'</td>';
+    }
+  }
+  const nn=cs.find(k=>k.type==="none");
+  return '<table class="mono">'+r1+'</tr>'+r2+'</tr>'+r3+'</tr></table>'
+   +'<div class="hint">'+(p.deg===3
+     ?'변곡점 <span class="math"><i>x</i> = '+sg(p.m)+'</span> 에 대해 두 극점이 점대칭입니다.'
+     :(nn?'<span class="math"><i>x</i> = '+sg(nn.x)+'</span> 에서 <span class="math"><i>f</i>&prime;=0</span> 이지만 부호가 그대로여서 극값이 아닙니다.'
+        :'변곡점 '+p.infl.length+'개 — <span class="math"><i>f</i>&Prime;(<i>x</i>) = '+pStr(pDeriv(pDeriv(p.co)))+'</span>'))+'</div>';
+}
+
+/* ================= 이벤트 ================= */
+$("gradeBtn").onclick=grade;
+$("nextBtn").onclick=nextProblem;
+$("newBtn").onclick=nextProblem;
+$("resetBtn").onclick=()=>{rec={correct:0,total:0,streak:0,bank:[]};save();paintStats();};
+for(const id of ["deg3","deg4","famAll","famA","famB","famC","famD","t8","noext","wrongonly","tR","tW"])
+  $(id).onchange=nextProblem;
+for(const id of ["t1","t2","t3","t4","t5","t6","t7"])
+  $(id).onchange=()=>{syncChips();graded?nextProblem():render();};
+for(const id of ["ov1","ov2"])
+  $(id).onchange=()=>{syncChips();if(graded)$("graphBox").innerHTML=plot(cur,"base");};
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter")return;
+  if(e.target.tagName==="BUTTON")return;
+  e.preventDefault();
+  graded?nextProblem():grade();
+});
+syncChips();
+nextProblem();
+
+/* ================= 탐구 모드 ================= */
+const DK={bg:"#0F1E29",grid:"#1B3242",gridS:"#2B4C60",axis:"#88A7B8",text:"#9DB6C4",
+  curve:"#38D9C7",curve2:"#C77DFF",ext:"#FF6B4A",ruler:"#FFD84D",line:"#7CFF9E",soft:"#3A5C70"};
+const EX={p:null,step:0,pick:-1,choices:[],order:[],bounds:[],a:0,t:0};
+
+function pad0(A,n){return new Array(Math.max(0,n-A.length)).fill(0).concat(A);}
+function pAdd(A,B){const n=Math.max(A.length,B.length);A=pad0(A,n);B=pad0(B,n);return A.map((v,i)=>v+B[i]);}
+function pScale(A,k){return A.map(v=>v*k);}
+function pMulX(A){return A.concat([0]);}
+
+const facStr=(r,k)=>{
+  const b=Math.abs(r)<1e-12?"<i>x</i>":("(<i>x</i> "+(r<0?"+ "+num(-r):"&minus; "+num(r))+")");
+  return b+(k>1?"<sup>"+k+"</sup>":"");
+};
+const leadStr=c=>c===1?"":c===-1?"&minus;":sg(c);
+function dfFactored(p){
+  const a=p.co[0];
+  if(p.deg===3){
+    if(p.k<0)return leadStr(3*a)+facStr(p.m-p.d,1)+facStr(p.m+p.d,1);
+    if(p.k===0)return leadStr(3*a)+facStr(p.m,2);
+    return leadStr(3*a)+"{"+facStr(p.m,2)+" + "+p.k+"}";
+  }
+  if(p.fam==="A")return leadStr(4*a)+facStr(p.c-p.d,1)+facStr(p.c,1)+facStr(p.c+p.d,1);
+  if(p.fam==="B"){const K=3*p.be+p.al;return leadStr(a)+facStr(p.al,2)+"(4<i>x</i> "+(K<0?"+ "+(-K):"&minus; "+K)+")";}
+  if(p.fam==="C")return leadStr(4*a)+p.r.map(x=>facStr(x,1)).join("");
+  if(p.b===0)return leadStr(4*a)+facStr(p.c,3);
+  return "2"+facStr(p.c,1)+"{"+sg(2*a)+facStr(p.c,2)+" + "+sg(p.b)+"}";
+}
+function dfWhy(p){
+  const cs=p.crit;
+  if(!cs.length)return "<span class='math'><i>f</i>&prime;</span> 이 실근을 갖지 않아 부호가 일정합니다 → 극값 없이 단조"+(p.co[0]>0?"증가":"감소")+".";
+  const sgn=[];
+  const dco=pDeriv(p.co);
+  const xs=[cs[0].x-1];
+  for(let i=0;i<cs.length-1;i++)xs.push((cs[i].x+cs[i+1].x)/2);
+  xs.push(cs[cs.length-1].x+1);
+  for(const x of xs)sgn.push(pEval(dco,x)>0?"+":"&minus;");
+  const zeros=cs.map(k=>sg(k.x)).join(", ");
+  const none=cs.filter(k=>k.type==="none");
+  return "<span class='math'><i>f</i>&prime;=0</span> 인 <span class='math'><i>x</i></span> : "+zeros
+   +" &nbsp;/&nbsp; 부호 "+sgn.join(" → ")
+   +(none.length?"<br><span class='math'><i>x</i>="+sg(none[0].x)+"</span> 은 중근이라 부호가 바뀌지 않습니다 → 극값 아님.":"");
+}
+
+function quartW(a,c,d,e){return [a,-4*a*c,6*a*c*c-2*a*d*d,-4*a*c*c*c+4*a*c*d*d,a*c*c*c*c-2*a*d*d*c*c+e];}
+function quartU(a,c,b,e){return [a,-4*a*c,6*a*c*c+b,-4*a*c*c*c-2*b*c,a*c*c*c*c+b*c*c+e];}
+function exAlt(p){
+  if(p.deg===3){
+    const a=p.a,m=p.m,n=p.n;
+    if(p.hasExt)return [a,-3*a*m,3*a*m*m,-a*m*m*m+n];
+    return [a,-3*a*m,3*a*(m*m-1),-a*m*m*m+3*a*m+n];
+  }
+  const a=p.co[0],ex=p.crit.filter(k=>k.type!=="none");
+  if(ex.length>1){const mid=p.crit[Math.floor(p.crit.length/2)];return quartU(a,mid.x,Math.abs(a),mid.v);}
+  return quartW(a,ex[0].x,2,ex[0].v);
+}
+function exWindow(p){
+  const fe=p.crit.map(k=>k.x).concat(p.infl);
+  if(p.deg===3&&p.hasExt)fe.push(p.m-2*p.d,p.m+2*p.d);
+  if(p.deg===4&&p.fam==="A")fe.push(p.c-S2*p.d,p.c+S2*p.d);
+  if(p.deg===4&&p.fam==="B")fe.push(p.al,p.be);
+  const lo=Math.min.apply(null,fe),hi=Math.max.apply(null,fe);
+  const pd=Math.max(0.9,(hi-lo)*0.3);
+  return [lo-pd,hi+pd];
+}
+
+/* --- 어두운 무대 플로터 --- */
+function sPlot(cfg){
+  const W=cfg.W||620,H=cfg.H||400,mL=46,mR=24,mT=cfg.mT||26,mB=cfg.mB||52;
+  const x0=cfg.x0,x1=cfg.x1;
+  const N=360,ys=[];
+  for(const fn of cfg.fns)for(let i=0;i<=N;i++){const v=fn.f(x0+(x1-x0)*i/N);if(isFinite(v))ys.push(v);}
+  for(const h of (cfg.hlines||[]))ys.push(h.y);
+  for(const m of (cfg.marks||[]))ys.push(m.y);
+  let yMin=Math.min.apply(null,ys),yMax=Math.max.apply(null,ys);
+  if(cfg.yPin!==undefined){yMin=Math.min(yMin,cfg.yPin);yMax=Math.max(yMax,cfg.yPin);}
+  const p1=(yMax-yMin)*0.12||1;yMin-=p1;yMax+=p1;
+  const px=x=>mL+(x-x0)/(x1-x0)*(W-mL-mR);
+  const py=y=>mT+(yMax-y)/(yMax-yMin)*(H-mT-mB);
+  const cy=y=>Math.min(H-mB+400,Math.max(mT-400,py(y)));
+  let g='<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="'+DK.bg+'" rx="3"/>';
+  for(let x=Math.ceil(x0);x<=Math.floor(x1);x++)
+    g+='<line x1="'+px(x)+'" y1="'+mT+'" x2="'+px(x)+'" y2="'+(H-mB)+'" stroke="'+DK.grid+'" stroke-width=".8"/>';
+  const steps=[1,2,5,10,20,25,50,100,200,500];
+  const st=steps.filter(v=>(yMax-yMin)/v<=8)[0]||1000;
+  for(let y=Math.ceil(yMin/st)*st;y<=yMax;y+=st){
+    g+='<line x1="'+mL+'" y1="'+py(y)+'" x2="'+(W-mR)+'" y2="'+py(y)+'" stroke="'+DK.grid+'" stroke-width=".8"/>';
+    g+='<text x="'+(mL-8)+'" y="'+(py(y)+4)+'" text-anchor="end" font-size="12" fill="'+DK.text+'" font-family="Cambria,serif">'+y+'</text>';
+  }
+  if(yMin<0&&yMax>0)g+='<line x1="'+mL+'" y1="'+py(0)+'" x2="'+(W-mR)+'" y2="'+py(0)+'" stroke="'+DK.axis+'" stroke-width="1.6"/>';
+  if(x0<0&&x1>0)g+='<line x1="'+px(0)+'" y1="'+mT+'" x2="'+px(0)+'" y2="'+(H-mB)+'" stroke="'+DK.axis+'" stroke-width="1.6"/>';
+  for(let x=Math.ceil(x0);x<=Math.floor(x1);x++)if(x!==0)
+    g+='<text x="'+px(x)+'" y="'+(H-mB+18)+'" text-anchor="middle" font-size="12" fill="'+DK.text+'" font-family="Cambria,serif">'+x+'</text>';
+
+  let o="";
+  for(const h of (cfg.hlines||[]))
+    o+='<line x1="'+px(h.x0!==undefined?h.x0:x0)+'" y1="'+py(h.y)+'" x2="'+px(h.x1!==undefined?h.x1:x1)+'" y2="'+py(h.y)+'" stroke="'+h.color+'" stroke-width="'+(h.w||1.4)+'" stroke-dasharray="'+(h.dash||"7 5")+'"/>';
+  for(const L of (cfg.lines||[]))
+    o+='<line x1="'+px(x0)+'" y1="'+cy(L.m*x0+L.n)+'" x2="'+px(x1)+'" y2="'+cy(L.m*x1+L.n)+'" stroke="'+L.color+'" stroke-width="'+(L.w||2)+'"'+(L.dash?' stroke-dasharray="'+L.dash+'"':'')+'/>';
+  if(cfg.ruler){
+    const R=cfg.ruler,rY=H-24;
+    o+='<line x1="'+px(R.cx+R.u*R.marks[0])+'" y1="'+rY+'" x2="'+px(R.cx+R.u*R.marks[R.marks.length-1])+'" y2="'+rY+'" stroke="'+DK.ruler+'" stroke-width="1.6"/>';
+    for(const t of R.marks){
+      o+='<line x1="'+px(R.cx+R.u*t)+'" y1="'+(rY-6)+'" x2="'+px(R.cx+R.u*t)+'" y2="'+(rY+6)+'" stroke="'+DK.ruler+'" stroke-width="1.6"/>';
+      o+='<line x1="'+px(R.cx+R.u*t)+'" y1="'+mT+'" x2="'+px(R.cx+R.u*t)+'" y2="'+(rY-6)+'" stroke="'+DK.ruler+'" stroke-width=".9" stroke-dasharray="4 4" opacity=".55"/>';
+    }
+    for(let j=0;j<R.labels.length;j++){
+      if(!R.labels[j])continue;
+      const at=R.mode==="pos"?R.marks[j]:(R.marks[j]+R.marks[j+1])/2;
+      o+='<text x="'+px(R.cx+R.u*at)+'" y="'+(rY-11)+'" text-anchor="middle" font-size="13" fill="'+DK.ruler+'" font-family="Cambria,serif">'+R.labels[j]+'</text>';
+    }
+  }
+  let c="";
+  for(const fn of cfg.fns){
+    let d="";
+    for(let i=0;i<=N;i++){const x=x0+(x1-x0)*i/N;d+=(i?"L":"M")+px(x).toFixed(1)+" "+cy(fn.f(x)).toFixed(1)+" ";}
+    c+='<path d="'+d+'" fill="none" stroke="'+fn.color+'" stroke-width="'+(fn.w||2.6)+'" stroke-linejoin="round" stroke-linecap="round"'+(fn.dash?' stroke-dasharray="'+fn.dash+'"':'')+(fn.op?' opacity="'+fn.op+'"':'')+'/>';
+  }
+  for(const m of (cfg.marks||[])){
+    c+='<circle cx="'+px(m.x)+'" cy="'+py(m.y)+'" r="'+(m.r||5.5)+'" fill="'+(m.hollow?DK.bg:m.color)+'" stroke="'+m.color+'" stroke-width="2.4"/>';
+    if(m.label)c+='<text x="'+px(m.x)+'" y="'+(py(m.y)-12)+'" text-anchor="middle" font-size="12" fill="'+m.color+'" font-family="Cambria,serif">'+m.label+'</text>';
+  }
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="개형"><g>'+g+'</g><g>'+o+'</g><g>'+c+'</g></svg>';
+}
+function miniPlot(co,x0,x1){
+  return sPlot({W:300,H:190,mT:14,mB:22,x0,x1,fns:[{f:x=>pEval(co,x),color:DK.curve,w:2.4}]});
+}
+
+/* --- 계단 그래프 (어두운 테마) --- */
+function sStep(segs,pts,opens,tLo,tHi,vMax,cur){
+  const W=620,H=210,mL=46,mR=24,mT=18,mB=40,top=vMax+0.6;
+  const px=t=>mL+(t-tLo)/(tHi-tLo)*(W-mL-mR);
+  const py=v=>mT+(top-v)/top*(H-mT-mB);
+  let s='<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="'+DK.bg+'" rx="3"/>';
+  for(let v=0;v<=vMax;v++){
+    s+='<line x1="'+mL+'" y1="'+py(v)+'" x2="'+(W-mR)+'" y2="'+py(v)+'" stroke="'+DK.grid+'" stroke-width=".8"/>';
+    s+='<text x="'+(mL-8)+'" y="'+(py(v)+4)+'" text-anchor="end" font-size="12" fill="'+DK.text+'" font-family="Cambria,serif">'+v+'</text>';
+  }
+  const tick=Math.max(1,Math.round((tHi-tLo)/8));
+  for(let t=Math.ceil(tLo/tick)*tick;t<=tHi;t+=tick){
+    s+='<line x1="'+px(t)+'" y1="'+mT+'" x2="'+px(t)+'" y2="'+(H-mB)+'" stroke="'+DK.grid+'" stroke-width=".8"/>';
+    s+='<text x="'+px(t)+'" y="'+(H-mB+18)+'" text-anchor="middle" font-size="12" fill="'+DK.text+'" font-family="Cambria,serif">'+t+'</text>';
+  }
+  s+='<line x1="'+mL+'" y1="'+py(0)+'" x2="'+(W-mR)+'" y2="'+py(0)+'" stroke="'+DK.axis+'" stroke-width="1.4"/>';
+  if(cur!==undefined&&cur>=tLo&&cur<=tHi)
+    s+='<line x1="'+px(cur)+'" y1="'+mT+'" x2="'+px(cur)+'" y2="'+(H-mB)+'" stroke="'+DK.ruler+'" stroke-width="1.6" stroke-dasharray="4 4"/>';
+  for(const q of segs)
+    s+='<line x1="'+px(Math.max(q.a,tLo))+'" y1="'+py(q.v)+'" x2="'+px(Math.min(q.b,tHi))+'" y2="'+py(q.v)+'" stroke="'+DK.line+'" stroke-width="3"/>';
+  for(const o of opens)
+    s+='<circle cx="'+px(o.t)+'" cy="'+py(o.v)+'" r="5" fill="'+DK.bg+'" stroke="'+DK.line+'" stroke-width="2.2"/>';
+  for(const q of pts){
+    s+='<line x1="'+px(q.t)+'" y1="'+py(0)+'" x2="'+px(q.t)+'" y2="'+py(q.v)+'" stroke="'+DK.ext+'" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>';
+    s+='<circle cx="'+px(q.t)+'" cy="'+py(q.v)+'" r="5" fill="'+DK.line+'"/>';
+    s+='<text x="'+px(q.t)+'" y="'+(py(0)+16)+'" text-anchor="middle" font-size="12" fill="'+DK.ext+'" font-family="Cambria,serif">'+num(q.t)+'</text>';
+  }
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="계단 그래프"><g>'+s+'</g></svg>';
+}
+
+/* --- y = t(x-a) 교점 --- */
+function tanFromPoint(p,a){
+  const df=pDeriv(p.co);
+  const phi=pAdd(pAdd(p.co,pScale(pMulX(df),-1)),pScale(df,a));
+  const S=pRoots(phi);
+  return S.map(s=>({s,t:pEval(df,s),y:pEval(p.co,s)}));
+}
+function hitsF(p,a,t,tans){
+  const q=pAdd(p.co,pScale(pad0([t,-t*a],p.co.length),-1));
+  let R=pRoots(q);
+  for(const g of (tans||[]))if(Math.abs(g.t-t)<1e-9&&!R.some(r=>Math.abs(r-g.s)<1e-6))R.push(g.s);
+  return uniq(R,1e-6);
+}
+function hitsAbs(p,a,t,tans){
+  const L=x=>t*(x-a);
+  const q1=pAdd(p.co,pScale(pad0([t,-t*a],p.co.length),-1));
+  const q2=pAdd(p.co,pad0([t,-t*a],p.co.length));
+  let R=pRoots(q1).concat(pRoots(q2));
+  for(const g of (tans||[]))if(Math.abs(Math.abs(g.t)-Math.abs(t))<1e-9)R.push(g.s);
+  R=R.filter(x=>L(x)>=-1e-7&&Math.abs(Math.abs(pEval(p.co,x))-L(x))<1e-6);
+  return uniq(R,1e-6);
+}
+function hBoundaries(p,a,useAbs){
+  const tans=tanFromPoint(p,a);
+  let cand=[];
+  if(!useAbs)cand=tans.map(g=>g.t);
+  else{
+    for(const g of tans){
+      if(g.y>1e-9)cand.push(g.t);
+      else if(g.y<-1e-9)cand.push(-g.t);
+      else cand.push(g.t,-g.t);
+    }
+    cand.push(0);
+  }
+  cand=uniq(cand,1e-6);
+  const cnt=t=>(useAbs?hitsAbs(p,a,t,tans):hitsF(p,a,t,tans)).length;
+  const sp=cand.length>1?cand[cand.length-1]-cand[0]:1;
+  const dl=Math.max(1e-3,sp*1e-3);
+  return {tans,bounds:cand.filter(t=>cnt(t)!==cnt(t-dl)||cnt(t)!==cnt(t+dl))};
+}
+
+/* --- 단계 렌더 --- */
+function exPool(){
+  if(deg()===4)return pool4();
+  return on("noext")?POOL.all:POOL.ext;
+}
+function exNew(){
+  const pl=exPool();
+  let c=pl[Math.floor(Math.random()*pl.length)];
+  if(EX.p&&pl.length>1)while(c.id===EX.p.id)c=pl[Math.floor(Math.random()*pl.length)];
+  EX.p=c;EX.step=0;EX.pick=-1;
+  const rnd=mulberry32(c.id*31337+5);
+  EX.choices=[c.co,c.co.map(v=>-v),exAlt(c)];
+  EX.order=[0,1,2];
+  for(let i=2;i>0;i--){const j=Math.floor(rnd()*(i+1));const t=EX.order[i];EX.order[i]=EX.order[j];EX.order[j]=t;}
+  const w=exWindow(c);
+  EX.a=Math.round(((w[0]+w[1])/2)*2)/2;
+  $("exA").min=Math.floor(w[0]-2);$("exA").max=Math.ceil(w[1]+2);$("exA").value=EX.a;
+  $("exLayer").value="base";
+  exRender();
+}
+const STEPS=["함수","도함수","개형 추론","극값 · 비율관계 · 레이어"];
+function exRender(){
+  const p=EX.p;if(!p)return;
+  $("exStep").textContent=(EX.step+1)+" / "+STEPS.length;
+  $("exTitle").textContent=STEPS[EX.step];
+  $("exFx").innerHTML="<i>f</i>(<i>x</i>) = "+pStr(p.co);
+  $("exDf").hidden=EX.step<1;
+  $("exQuiz").hidden=EX.step!==2;
+  $("exStage").hidden=EX.step<3;
+  $("exBack").disabled=EX.step===0;
+  $("exNext").disabled=EX.step===STEPS.length-1||(EX.step===2&&EX.pick<0);
+  if(EX.step>=1){
+    $("exDfPlain").innerHTML="<i>f</i>&prime;(<i>x</i>) = "+pStr(pDeriv(p.co));
+    $("exDfFac").innerHTML="= "+dfFactored(p);
+    $("exDfWhy").innerHTML=EX.step>=2?dfWhy(p):"";
+  }
+  if(EX.step===2){
+    const w=exWindow(p);
+    let h="";
+    for(let i=0;i<3;i++){
+      const idx=EX.order[i];
+      const cls=EX.pick<0?"":(idx===0?"right":(i===EX.pick?"wrong":""));
+      h+='<div class="choice '+cls+'" data-i="'+i+'"><span class="cl">'+"①②③"[i]+'</span>'+miniPlot(EX.choices[idx],w[0],w[1])+'</div>';
+    }
+    $("exChoices").innerHTML=h;
+    for(const el of $("exChoices").children)el.onclick=e=>{
+      e.stopPropagation();
+      if(EX.pick>=0)return;
+      EX.pick=+el.dataset.i;exRender();
+    };
+    $("exQuizWhy").innerHTML=EX.pick<0?"":
+      (EX.order[EX.pick]===0?"<b style='color:var(--ok)'>정답.</b> ":"<b style='color:var(--mark)'>오답.</b> ")
+      +"나머지 둘은 <span class='math'><i>f</i>&prime;</span> 의 <b>부호</b>가 반대이거나, <span class='math'><i>f</i>&prime;=0</span> 의 <b>실근 개수</b>가 다른 함수입니다.";
+  }
+  if(EX.step>=3)exStage();
+}
+function exStage(){
+  const p=EX.p,layer=$("exLayer").value,w=exWindow(p);
+  $("exHctl").hidden=layer!=="h";
+  let html="",sub="",why="";
+  if(layer==="base"){
+    const marks=p.crit.map(k=>({x:k.x,y:k.v,color:k.type==="none"?DK.soft:DK.ext,hollow:k.type==="none",
+      label:k.type==="max"?"극대":k.type==="min"?"극소":""}));
+    for(const x of p.infl)marks.push({x,y:p.f(x),color:DK.curve2,r:4.5,hollow:true,label:"변곡"});
+    const hl=[];let ruler=null;
+    if(p.deg===3&&p.hasExt){
+      hl.push({y:p.maxY,color:DK.ruler,x0:Math.min(p.maxX,p.crossMax),x1:Math.max(p.maxX,p.crossMax)});
+      hl.push({y:p.minY,color:DK.ruler,x0:Math.min(p.minX,p.crossMin),x1:Math.max(p.minX,p.crossMin)});
+      hl.push({y:p.n,color:DK.ext,x0:p.m-S3*p.d,x1:p.m+S3*p.d,dash:"4 4"});
+      for(const x of [p.m-S3*p.d,p.m+S3*p.d])marks.push({x,y:p.n,color:DK.ext,r:4.5});
+      for(const x of [p.crossMax,p.crossMin])marks.push({x,y:p.f(x),color:DK.ruler,r:4.5,hollow:true});
+      ruler={cx:p.m,u:p.d,marks:[-2,-1,0,1,2],labels:["1","1","1","1"],mode:"seg"};
+      why="변곡점을 기준으로 <b>극점 ±1</b>, <b>변곡선 교점 ±√3</b>, <b>극값선 교점 ±2</b> (단위 <span class='math'><i>d</i>="+p.d+"</span>).";
+    }else if(p.deg===4&&p.fam==="A"){
+      hl.push({y:p.vAx,color:DK.ext,x0:p.c-S2*p.d,x1:p.c+S2*p.d,dash:"4 4"});
+      for(const x of [p.c-S2*p.d,p.c+S2*p.d])marks.push({x,y:p.vAx,color:DK.ext,r:4.5});
+      ruler={cx:p.c,u:p.d,marks:[0,1/S3,1,S2],labels:["","1/√3","1","√2"],mode:"pos"};
+      why="대칭축에서 재면 <b>변곡점 1/√3</b>, <b>극소 1</b>, <b>극값선 교점 √2</b> (단위 <span class='math'><i>d</i>="+p.d+"</span>). 극솟값을 지나는 직선은 <b>이중접선</b>이라 다른 교점이 없습니다.";
+    }else if(p.deg===4&&p.fam==="B"){
+      ruler={cx:p.al,u:p.L/4,marks:[0,2,3,4],labels:["2","1","1"],mode:"seg"};
+      why="삼중근 → 변곡점 → 극점 → 나머지 근이 <b>2 : 1 : 1</b>.";
+    }else why="이 계열에는 표준 비율관계가 성립하지 않습니다. 증감표로 개형을 잡으세요.";
+    if(p.bt&&p.bt.exists){
+      marks.push({x:p.bt.pts[0],y:p.f(p.bt.pts[0]),color:DK.line,r:4.5});
+      marks.push({x:p.bt.pts[1],y:p.f(p.bt.pts[1]),color:DK.line,r:4.5});
+    }
+    html=sPlot({x0:w[0],x1:w[1],fns:[{f:p.f,color:DK.curve}],marks,hlines:hl,ruler,
+      lines:p.bt&&p.bt.exists?[{m:p.bt.m,n:p.bt.n,color:DK.line,w:1.6,dash:"8 5"}]:[]});
+    sub=readout([["극대",p.crit.filter(k=>k.type==="max").length],["극소",p.crit.filter(k=>k.type==="min").length],["변곡점",p.infl.length]]);
+  }
+  else if(layer==="abs"){
+    const dco=pDeriv(p.co),corners=pRoots(p.co).filter(r=>Math.abs(pEval(dco,r))>1e-6);
+    const marks=corners.map(x=>({x,y:0,color:DK.ext,r:5.5,hollow:true}));
+    html=sPlot({x0:w[0],x1:w[1],yPin:0,fns:[
+      {f:p.f,color:DK.soft,w:1.6,dash:"6 5"},
+      {f:x=>Math.abs(p.f(x)),color:DK.curve2,w:3}],marks});
+    sub=readout([["미분불가능 점",p.absNonDiff],["극댓값",p.absMax],["극솟값",p.absMin]]);
+    why="<span class='math'><i>f</i>=0</span> 인 점 중 <b><span class='math'><i>f</i>&prime;≠0</span> 인 곳에서만</b> 꺾입니다. 중근·삼중근에서는 매끄럽게 이어집니다.";
+  }
+  else if(layer==="g"){
+    const vs=critVals(p);
+    const hl=vs.map(v=>({y:v,color:DK.ruler,dash:"6 5"}));
+    const marks=p.crit.filter(k=>k.type!=="none").map(k=>({x:k.x,y:k.v,color:DK.ext}));
+    html=sPlot({x0:w[0],x1:w[1],H:330,fns:[{f:p.f,color:DK.curve}],hlines:hl,marks});
+    sub=plotGDark(p);
+    why="수평선 <span class='math'><i>y</i>=<i>t</i></span> 를 위아래로 움직일 때 교점 개수가 바뀌는 순간은 <b>극값을 지날 때</b> 뿐입니다 → 그 <span class='math'><i>t</i></span> 에서 <span class='math'><i>g</i></span> 가 불연속.";
+  }
+  else{
+    const useAbs=on("exAbsTarget");
+    EX.a=+$("exA").value;
+    const HB=hBoundaries(p,EX.a,useAbs);
+    EX.bounds=HB.bounds;
+    const bs=HB.bounds.slice().sort((x,y)=>x-y);
+    const sp=bs.length>1?bs[bs.length-1]-bs[0]:0;
+    const padT=Math.max(2,sp*0.45);
+    const tLo=Math.floor((bs.length?bs[0]:0)-padT),tHi=Math.ceil((bs.length?bs[bs.length-1]:0)+padT);
+    $("exT").min=tLo;$("exT").max=tHi;$("exT").step=Math.max(0.01,+((tHi-tLo)/400).toFixed(3));
+    if(EX.t<tLo||EX.t>tHi){EX.t=0;$("exT").value=0;}
+    EX.t=+$("exT").value;
+    $("exAv").textContent=num(EX.a);$("exTv").textContent=num(EX.t);
+    const F=useAbs?(x=>Math.abs(p.f(x))):p.f;
+    const hits=useAbs?hitsAbs(p,EX.a,EX.t,HB.tans):hitsF(p,EX.a,EX.t,HB.tans);
+    const marks=hits.filter(x=>x>=w[0]-1&&x<=w[1]+1).map(x=>({x,y:F(x),color:DK.ruler,r:5.5}));
+    marks.push({x:EX.a,y:0,color:DK.ext,r:5,label:"(a, 0)"});
+    const fns=[{f:F,color:useAbs?DK.curve2:DK.curve,w:3}];
+    if(useAbs)fns.unshift({f:p.f,color:DK.soft,w:1.4,dash:"6 5"});
+    html=sPlot({x0:w[0],x1:w[1],yPin:0,fns,marks,
+      lines:[{m:EX.t,n:-EX.t*EX.a,color:DK.line,w:2.2}]});
+    const cnt=hits.length;
+    sub=readout([["h(t)",cnt],["불연속 t 개수",bs.length],["접선 개수",HB.tans.length]])+plotHDark(p,bs,tLo,tHi,EX.t,useAbs,HB.tans);
+    why="점 <span class='math'>("+num(EX.a)+", 0)</span> 을 지나는 직선의 기울기 <span class='math'><i>t</i></span> 를 바꾸면 교점 개수가 바뀌는 순간은 <b>그 점에서 그은 접선이 될 때</b>"
+      +(useAbs?" 그리고 <b><span class='math'><i>x</i></span>축과 겹칠 때</b>":"")+"입니다. 불연속인 <span class='math'><i>t</i></span> : "+(bs.length?bs.map(num).join(", "):"없음");
+  }
+  $("exPlot").innerHTML=html;$("exSub").innerHTML=sub;$("exWhy").innerHTML=why;
+}
+function readout(rows){
+  return '<div class="readout">'+rows.map(r=>'<span class="rd">'+r[0]+' <b>'+r[1]+'</b></span>').join("")+'</div>';
+}
+function plotGDark(p){
+  const vs=critVals(p),vMax=p.deg;
+  if(!vs.length)return sStep([{a:-5,b:5,v:gCount(p,0)}],[],[],-5,5,vMax);
+  const span=vs[vs.length-1]-vs[0],pd=Math.max(1,Math.round(span*0.35)||2);
+  const lo=vs[0]-pd,hi=vs[vs.length-1]+pd;
+  const ed=[lo].concat(vs,[hi]),segs=[],pts=[],ops=[];
+  for(let i=0;i<ed.length-1;i++)segs.push({a:ed[i],b:ed[i+1],v:gCount(p,(ed[i]+ed[i+1])/2)});
+  for(const t of vs){
+    const v=gCount(p,t);pts.push({t,v});
+    for(const q of segs)if((Math.abs(q.a-t)<1e-9||Math.abs(q.b-t)<1e-9)&&q.v!==v)ops.push({t,v:q.v});
+  }
+  return sStep(segs,pts,ops,lo,hi,vMax);
+}
+function plotHDark(p,bs,tLo,tHi,cur,useAbs,tans){
+  const cnt=t=>(useAbs?hitsAbs(p,EX.a,t,tans):hitsF(p,EX.a,t,tans)).length;
+  const ed=[tLo].concat(bs,[tHi]),segs=[],pts=[],ops=[];
+  for(let i=0;i<ed.length-1;i++)segs.push({a:ed[i],b:ed[i+1],v:cnt((ed[i]+ed[i+1])/2)});
+  for(const t of bs){
+    const v=cnt(t);pts.push({t,v});
+    for(const q of segs)if((Math.abs(q.a-t)<1e-9||Math.abs(q.b-t)<1e-9)&&q.v!==v)ops.push({t,v:q.v});
+  }
+  const vMax=Math.max.apply(null,segs.map(s=>s.v).concat(pts.map(q=>q.v),[p.deg]));
+  return sStep(segs,pts,ops,tLo,tHi,vMax,cur);
+}
+
+/* --- 탐구 이벤트 --- */
+function exGo(d){
+  const n=EX.step+d;
+  if(n<0||n>=STEPS.length)return;
+  if(EX.step===2&&d>0&&EX.pick<0)return;
+  EX.step=n;exRender();
+}
+$("exNext").onclick=()=>exGo(1);
+$("exBack").onclick=()=>exGo(-1);
+$("exNew").onclick=e=>{e.stopPropagation();exNew();};
+$("exCard").onclick=()=>exGo(1);
+$("exLayer").onchange=exStage;
+for(const id of ["exA","exT"])$(id).oninput=exStage;
+$("exAbsTarget").onchange=()=>{EX.t=0;$("exT").value=0;exStage();};
+
+function applyMode(){
+  const ex=on("modeEx");
+  $("drillSet").hidden=ex;$("drillCols").hidden=ex;$("exUI").hidden=!ex;
+  syncChips();
+  if(ex){if(!EX.p)exNew();}else if(!cur)nextProblem();
+}
+for(const id of ["modeDrill","modeEx"])$(id).onchange=applyMode;
+const _deg3=$("deg3").onchange,_deg4=$("deg4").onchange;
+for(const id of ["deg3","deg4","famAll","famA","famB","famC","famD"])
+  $(id).onchange=()=>{syncChips();if(on("modeEx"))exNew();else nextProblem();};
+applyMode();
+
+</script>
+</body>
+</html>
