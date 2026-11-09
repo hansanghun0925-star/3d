@@ -93,7 +93,14 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:p
 label.chk input{accent-color:var(--curve);width:16px;height:16px;margin:0}
 input[type=number]{font-family:var(--font-math);font-size:16px;width:74px;padding:6px 8px;text-align:center;border:1px solid var(--grid-strong);border-radius:8px;background:#fff;color:var(--ink)}
 input[type=number].good{border-color:var(--ok);background:#EAF4EF}
-input[type=number].bad{border-color:var(--mark);background:#FBECEA}
+input[type=number].bad{border-color:var(--mark);background:#FBECEA;color:var(--mark);text-decoration:line-through;text-decoration-thickness:1.5px}
+.ans{display:inline-flex;align-items:center;gap:6px;margin-left:2px;padding:4px 10px 4px 6px;border-radius:8px;
+  background:#E4F4FD;border:1.5px solid #4FB3E8;color:#0B6A9E;white-space:nowrap;animation:ansPop .28s ease-out}
+.ans-k{font-size:11px;font-weight:600;color:#fff;background:#4FB3E8;border-radius:5px;padding:1px 6px}
+.ans b{font-family:var(--font-math);font-size:16px;font-weight:400;font-style:normal;color:#0B6A9E}
+.ans b.t{font-family:var(--font-ui);font-size:13px}
+@keyframes ansPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.ans{animation:none}}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
 .verdict{font-size:13px;margin-top:8px;font-weight:600}
@@ -1111,6 +1118,14 @@ function grade(){
     const good=it.bool?((el.checked?1:0)===it.v):(el.value.trim()!==""&&Number(el.value)===it.v);
     if(it.bool)el.parentElement.style.color=good?"var(--ok)":"var(--mark)";
     else el.classList.add(good?"good":"bad");
+    if(!good){
+      /* 오답이면 바로 옆에 정답을 강조해서 보여 준다 */
+      const a=document.createElement("span");
+      a.className="ans";
+      a.innerHTML='<span class="ans-k">정답</span>'+(it.bool?'<b class="t">'+(it.v?"체크":"체크 안 함")+'</b>':'<b>'+num(it.v)+'</b>');
+      a.title="입력한 값: "+(it.bool?(el.checked?"체크":"체크 안 함"):(el.value.trim()===""?"(빈칸)":el.value));
+      (it.bool?el.parentElement:el).insertAdjacentElement("afterend",a);
+    }
     if(good)ok++;
   }
   rec.total+=items.length;rec.correct+=ok;
