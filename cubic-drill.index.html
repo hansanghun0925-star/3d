@@ -113,6 +113,75 @@ input[type=number]{-moz-appearance:textfield}
 .gcap{font-size:12px;color:var(--ink-2);letter-spacing:.04em;margin:0 0 4px}
 .gcap b{color:var(--ink);font-weight:600}
 svg{display:block;width:100%;height:auto}
+/* 그래프 묶음: 채점 후에는 화면 높이에 맞춘 칸(1 · 2 · 3개는 한 줄로, 4개 이상은 두 칸씩)에 그린다 */
+#absBox{display:contents}
+.gstack.fit{display:grid;grid-template-columns:repeat(var(--cols,1),minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;
+  height:calc(100vh - 16px);height:calc(100dvh - 16px);margin-bottom:12px}
+.gstack.fit.tall{height:auto;grid-auto-rows:var(--rowh,190px)}
+.gstack.fit.sized{height:auto}
+.gstack.fit .tile{display:flex;flex-direction:column;min-height:0;margin:0;padding:6px 8px;border-radius:10px}
+.gstack.fit .tile .gcap{flex:none;margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gstack.fit .pbox{flex:1;min-height:0;display:flex;flex-direction:column}
+.gstack.fit .pbox svg{width:100%;height:100%;flex:1;min-height:0}
+.gstack.fit .pbox.split svg{flex:none}
+.gstack.fit #tileBase{position:relative}
+.gstack.fit #ovBox{position:absolute;top:4px;right:8px;margin:0!important;gap:4px}
+.gstack.fit #ovBox .chip{font-size:11.5px;padding:2px 9px}
+.gstack.fit.two #tileBase{grid-column:1/-1}
+#exPlot svg{max-width:min(100%,820px);margin-left:auto;margin-right:auto}
+#exPlot .gcap{max-width:820px;margin-left:auto;margin-right:auto}
+/* 스냅 : 접선 · 극값에 달라붙었을 때 값 표시를 강조 */
+.exval.snap{color:#fff;background:#2E9E6B;border-radius:6px;padding:0 6px;box-shadow:0 0 0 3px rgba(46,158,107,.25);animation:snapPop .18s ease-out}
+.exval .snapk{font-size:10.5px;font-weight:600;margin-left:4px;opacity:.9}
+@keyframes snapPop{from{transform:scale(.8)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.exval.snap{animation:none}}
+/* 문항 설정 접기 */
+.foldh{margin:0 0 10px}
+.fold{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:12px;width:100%;cursor:pointer;
+  font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-weight:600;padding:2px 0}
+.fold:focus-visible{outline:2px solid var(--mark);outline-offset:3px;border-radius:6px}
+.foldsum{flex:1;min-width:0;font-size:12px;letter-spacing:0;text-transform:none;font-weight:400;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.caret{font-size:13px;transition:transform .15s}
+#drillSet.folded .foldh{margin:0}
+#drillSet.folded #setBody{display:none}
+#drillSet.folded .caret{transform:rotate(-90deg)}
+#drillSet:not(.folded) .foldsum{visibility:hidden}
+/* 넓은 화면: 왼쪽 = 문제 · 증감표, 오른쪽 = 그래프 묶음 (스크롤해도 화면에 고정) */
+@media(min-width:861px){
+  #drillCols{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"q g" "t g";grid-template-rows:auto 1fr;row-gap:0}
+  #qpanel{grid-area:q}
+  #gcol{display:contents}
+  #gstack{grid-area:g;position:sticky;top:8px;align-self:start;min-width:0}
+  #tableBox{grid-area:t;min-width:0}
+}
+/* 넓은 화면: 모드·차수·계열을 한 줄로 */
+@media(min-width:861px){
+  #modePanel{display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px;padding-top:12px;padding-bottom:12px}
+  #modePanel .setrow{grid-template-columns:auto auto;border-top:none;padding:0;align-items:center}
+  #modePanel .setlab{padding-top:0}
+}
+/* 태블릿 가로처럼 높이가 낮은 화면: 여백 · 글자 압축 */
+@media(min-width:861px) and (max-height:920px){
+  body{padding:10px 14px 36px;font-size:14px;line-height:1.55}
+  header.top{margin-bottom:10px;padding-bottom:6px;gap:10px}
+  .sub{display:none}
+  h1{font-size:19px}
+  .stats{gap:12px}
+  .stats b{font-size:16px}
+  .panel{padding:11px 14px;margin-bottom:10px;border-radius:12px}
+  .setrow{padding:6px 0}
+  .chip{font-size:12.5px;padding:4px 11px}
+  .fx{font-size:21px;margin:4px 0 10px}
+  .cols{gap:12px}
+  .gwrap{padding:6px 8px;margin-bottom:10px}
+  input[type=number]{padding-top:4px;padding-bottom:4px}
+  .exfx{font-size:24px}
+  .stagecard{padding:12px}
+  .stagewrap{padding:12px 14px}
+  table.mono{font-size:13.5px;margin-top:8px}
+  table.mono th,table.mono td{padding:4px 3px}
+}
 .veil{display:flex;align-items:center;justify-content:center;height:300px;color:var(--ink-3);font-size:14px;text-align:center;padding:0 24px;border:1px dashed var(--grid-strong);border-radius:2px}
 
 table.mono{width:100%;border-collapse:collapse;margin-top:12px;font-family:var(--font-math);font-size:15px}
@@ -150,7 +219,7 @@ input[type=range]{accent-color:var(--curve-3);width:140px}
   border:1px solid var(--rule);border-radius:3px;background:var(--paper-2)}
 .viewbar .exlab{margin:0}
 .vhint{font-size:11.5px;color:var(--ink-3)}
-#exPlot{touch-action:none;cursor:grab}
+#exPlot{touch-action:pan-y;cursor:grab}
 #exPlot.grabbing{cursor:grabbing}
 .readout{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .rd{font-size:13px;border:1px solid var(--rule);border-radius:999px;padding:3px 12px;background:var(--paper-2)}
@@ -210,7 +279,8 @@ input[type=range]{accent-color:var(--curve-3);width:140px}
 </section>
 
 <section class="panel" id="drillSet">
-  <h2>문항 설정</h2>
+  <h2 class="foldh"><button type="button" class="fold" id="setFold" aria-expanded="true" aria-controls="setBody"><span>문항 설정</span><span class="foldsum" id="setSum"></span><span class="caret" aria-hidden="true">▾</span></button></h2>
+  <div id="setBody">
 
   <div class="setrow" style="border-top:none;padding-top:0">
     <div class="setlab">기본</div>
@@ -270,6 +340,7 @@ input[type=range]{accent-color:var(--curve-3);width:140px}
     <button class="ghost" id="resetBtn" title="통계와 오답 보관을 모두 지웁니다">전체 기록 지우기</button>
     <span class="f" id="bankInfo"></span>
   </div>
+</div>
 </section>
 
 <div class="cols" id="drillCols">
@@ -286,16 +357,18 @@ input[type=range]{accent-color:var(--curve-3);width:140px}
     </div>
   </section>
 
-  <section>
-    <div class="gwrap">
-      <p class="gcap"><b>y = f(x)</b></p>
-      <div id="graphBox"><div class="veil">채점하면 개형이 공개됩니다.<br>먼저 종이에 그려보세요.</div></div>
-      <div class="chips" id="ovBox" style="margin-top:10px;display:none">
-        <label class="chip on"><input type="checkbox" id="ov1" checked>비율 눈금</label>
-        <label class="chip on"><input type="checkbox" id="ov2" checked>보조선</label>
+  <section id="gcol">
+    <div class="gstack" id="gstack">
+      <div class="gwrap tile" id="tileBase">
+        <p class="gcap"><b>y = f(x)</b></p>
+        <div id="graphBox" class="pbox"><div class="veil">채점하면 개형이 공개됩니다.<br>먼저 종이에 그려보세요.</div></div>
+        <div class="chips" id="ovBox" style="margin-top:6px;display:none">
+          <label class="chip on"><input type="checkbox" id="ov1" checked>비율 눈금</label>
+          <label class="chip on"><input type="checkbox" id="ov2" checked>보조선</label>
+        </div>
       </div>
+      <div id="absBox"></div>
     </div>
-    <div id="absBox"></div>
     <div id="tableBox"></div>
   </section>
 </div>
@@ -330,35 +403,44 @@ input[type=range]{accent-color:var(--curve-3);width:140px}
           <label class="exlab" for="exLayer">레이어</label>
           <select id="exLayer">
             <option value="base">극값 · 비율관계</option>
-            <option value="deriv">f 와 f&prime; (커서 연동)</option>
-            <option value="abs">y = |f(x)| 개형</option>
-            <option value="g">g(t) : f(x) = t</option>
-            <option value="gabs">g(t) : |f(x)| = t</option>
+            <option value="deriv">도함수 : f · f&prime; (커서 · 부호변화)</option>
+            <option value="g">y = t 와의 교점 g(t) · |f(x)|</option>
             <option value="area">f&prime; 의 넓이 = 극값의 차 · 1/12 · 1/30</option>
-            <option value="tan">접선 : x = s 에서 (교점 개수)</option>
-            <option value="slope">기울기 M 인 접선 (접점 개수)</option>
-            <option value="struct">구조 : f&prime; · f&Prime; 의 근과 부호변화</option>
-            <option value="h">h(t) : y = t(x − a) · N(a)</option>
+            <option value="tan">접선 : 접점 s · 기울기 M</option>
+            <option value="ptan">점에서 그은 직선 · 접선 : h(t) · N</option>
             <option value="param">파라미터 실험 (불변성 · 분기)</option>
           </select>
-          <span id="exHctl" hidden>
-            <label class="exlab" for="exA">a</label>
-            <input type="range" id="exA" min="-6" max="6" step="0.5" value="0">
-            <b class="exval" id="exAv">0</b>
-            <label class="exlab" for="exT">기울기 t</label>
-            <input type="range" id="exT" min="-20" max="20" step="0.05" value="0">
-            <b class="exval" id="exTv">0</b>
-            <label class="chk" style="font-size:13px"><input type="checkbox" id="exAbsTarget">|f(x)| 에 대해</label>
+          <span id="exDctl" hidden>
+            <label class="chk" style="font-size:13px" id="dF2wrap"><input type="checkbox" id="dF2">f&Prime; 까지 보기</label>
           </span>
           <span id="exPctl" hidden>
-            <label class="exlab">a</label><input type="range" id="pA" min="-3" max="3" step="1" value="1"><b class="exval" id="pAv">1</b>
+            <label class="exlab" title="최고차항 계수">a</label><input type="range" id="pA" min="-3" max="3" step="1" value="1"><b class="exval" id="pAv">1</b>
             <label class="exlab" id="pMlab">m</label><input type="range" id="pM" min="-3" max="3" step="0.5" value="0"><b class="exval" id="pMv">0</b>
             <label class="exlab" id="pKlab">k</label><input type="range" id="pK" min="-9" max="4" step="1" value="-1"><b class="exval" id="pKv">&minus;1</b>
             <label class="exlab" id="pNlab">n</label><input type="range" id="pN" min="-12" max="12" step="1" value="0"><b class="exval" id="pNv">0</b>
           </span>
+          <span id="exTmCtl" hidden>
+            <label class="chip on" style="font-size:12.5px;padding:3px 10px"><input type="radio" name="tmode" id="tmS" checked>접점 s 로</label>
+            <label class="chip" style="font-size:12.5px;padding:3px 10px"><input type="radio" name="tmode" id="tmM">기울기 M 으로</label>
+          </span>
           <span id="exTanCtl" hidden>
             <label class="exlab" for="tanS">접점 s</label>
             <input type="range" id="tanS" min="-6" max="6" step="0.05" value="0"><b class="exval" id="tanSv">0</b>
+          </span>
+          <span id="exGCtl" hidden>
+            <label class="exlab" for="gT">y = t</label>
+            <input type="range" id="gT" min="-20" max="20" step="0.05" value="0"><b class="exval" id="gTv">0</b>
+            <label class="chk" style="font-size:13px"><input type="checkbox" id="gAbs">|f(x)| 에 대해</label>
+          </span>
+          <span id="exPtCtl" hidden>
+            <label class="exlab" for="ptP">p</label>
+            <input type="range" id="ptP" min="-6" max="6" step="0.25" value="0"><b class="exval" id="ptPv">0</b>
+            <label class="exlab" for="ptQ">q</label>
+            <input type="range" id="ptQ" min="-20" max="20" step="0.25" value="0"><b class="exval" id="ptQv">0</b>
+            <label class="exlab" for="exT">기울기 t</label>
+            <input type="range" id="exT" min="-20" max="20" step="0.05" value="0"><b class="exval" id="exTv">0</b>
+            <label class="chk" style="font-size:13px"><input type="checkbox" id="exAbsTarget">|f(x)| 에 대해</label>
+            <span class="vhint" style="margin-left:6px">그래프를 탭(클릭)하면 점 A 가 옮겨집니다</span>
           </span>
           <span id="exSlCtl" hidden>
             <label class="exlab" for="slM">기울기 M</label>
@@ -371,7 +453,7 @@ input[type=range]{accent-color:var(--curve-3);width:140px}
           <span class="exlab">가로 배율</span><input type="range" id="vX" min="-100" max="140" step="2" value="0"><b class="exval" id="vXv">×1</b>
           <span class="exlab">세로 배율</span><input type="range" id="vY" min="-100" max="140" step="2" value="0"><b class="exval" id="vYv">×1</b>
           <button class="ghost" id="vReset" style="padding:4px 11px;font-size:13px">원래대로</button>
-          <span class="vhint">드래그 = 이동 · 휠 = 확대 · Shift+휠 = 가로만 · Alt+휠 = 세로만 · 두 손가락 = 확대</span>
+          <span class="vhint">드래그 = 이동 · Ctrl(⌘)+휠 = 확대 (+Shift 가로만 · +Alt 세로만) · 터치: 위아래 쓸기 = 페이지 스크롤 · 좌우 쓸기 = 그래프 이동 · 두 손가락 = 확대/이동</span>
         </div>
         <div id="exSub"></div>
         <div class="exwhy" id="exWhy"></div>
@@ -750,6 +832,7 @@ function syncChips(){
   $("rowFam").hidden=d!==4;$("tAlab").textContent=d===4?"이중접선과의 넓이 (1/30)":"접선과의 넓이 (1/12)";$("t1lab").textContent=d===4?"극점":"극점 · 변곡점";
   for(const el of document.querySelectorAll(".chip[data-deg]"))
     el.style.display=(+el.dataset.deg===d)?"":"none";
+  if($("setSum"))paintSetSum();
 }
 
 let cur=null,graded=false,items=[];
@@ -1104,11 +1187,50 @@ function render(){
   $("graphBox").innerHTML='<div class="veil">채점하면 개형이 공개됩니다.<br>먼저 종이에 그려보세요.</div>';
   $("ovBox").style.display="none";
   $("absBox").innerHTML="";$("tableBox").innerHTML="";
+  GT=[];$("gstack").classList.remove("fit","tall","two","sized");$("gstack").style.gridTemplateRows="";
   const first=$("qs").querySelector("input");
   if(first)first.focus();
 }
 
 /* ================= 채점 ================= */
+/* ---- 그래프 묶음 그리기 : 개수에 따라 칸을 나누고, 칸 크기에 딱 맞춰 그린다 ---- */
+let GT=[];
+function drawGraphs(){
+  if(!graded||!cur)return;
+  /* 1 · 2 · 3개 : 한 줄로 쌓기 (f 그래프 칸을 조금 더 크게)
+     4개 이상 : f 그래프는 첫 줄 전체, 나머지는 두 칸씩 */
+  const st=$("gstack"),n=1+GT.length,cols=n<=3?1:2,rows=cols===1?n:1+Math.ceil((n-1)/2);
+  st.classList.add("fit");st.classList.toggle("two",cols===2);st.style.setProperty("--cols",cols);
+  const avail=window.innerHeight-16,unit=(avail-8*(rows-1))/(rows+0.35);
+  /* 너무 많아 한 칸이 140px 미만이면 화면 높이를 넘겨 쌓는다 */
+  const tall=unit<140;
+  st.classList.toggle("tall",tall);
+  st.style.setProperty("--rowh",Math.max(140,Math.round(unit))+"px");
+  /* 칸이 원래 비율보다 길쭉해지지 않게 : 그림 높이 ≤ 폭 × 0.8 (f 그래프) / × 0.6 (나머지) */
+  if(!tall){
+    const fullW=st.clientWidth||520,colW=(fullW-8*(cols-1))/cols,chrome=36;
+    const baseH=Math.min(unit*1.35,fullW*0.80+chrome),otherH=Math.min(unit,colW*0.60+chrome);
+    st.style.gridTemplateRows=[Math.round(baseH)].concat(Array(rows-1).fill(Math.round(otherH))).map(v=>v+"px").join(" ");
+    st.classList.add("sized");
+  }else{st.style.gridTemplateRows="";st.classList.remove("sized");}
+  $("absBox").innerHTML=GT.map((t,i)=>'<div class="gwrap tile"><p class="gcap">'+t.cap+'</p><div class="pbox" data-g="'+i+'"></div></div>').join("");
+  $("graphBox").innerHTML="";
+  /* 칸이 좁으면 그림의 기준 폭도 줄여 글자 크기를 유지한다 (기준 폭 = 실제 폭의 1.1배, 340~560) */
+  const size=box=>{const w=box.clientWidth||520,h=Math.max(90,box.clientHeight||300);
+    const W=Math.max(340,Math.min(560,Math.round(w*1.1)));return {W,H:Math.max(140,Math.round(W*h/w))};};
+  {const z=size($("graphBox"));$("graphBox").innerHTML=plot(cur,"base",z.H,z.W);}
+  for(const box of $("absBox").querySelectorAll(".pbox")){
+    const t=GT[+box.dataset.g],z=size(box);
+    if(t.step){STEP_W=z.W;STEP_H=z.H;box.innerHTML=t.step();STEP_W=0;STEP_H=0;}
+    else box.innerHTML=plot(cur,t.kind,z.H,z.W);
+  }
+}
+let rsT=0;
+window.addEventListener("resize",()=>{clearTimeout(rsT);rsT=setTimeout(()=>{
+  if(!$("drillCols").hidden)drawGraphs();
+  if(!$("exUI").hidden&&!$("exStage").hidden)exStage();
+},150);});
+
 function grade(){
   if(graded||!items.length)return;
   graded=true;let ok=0;
@@ -1139,18 +1261,20 @@ function grade(){
   $("qs").appendChild(v);
   const w=document.createElement("div");w.className="why";w.innerHTML=explain();$("qs").appendChild(w);
 
-  $("graphBox").innerHTML=plot(cur,"base");
+  const T=[];
+  if(on("t5"))T.push({cap:'<b>y = |f(x)|</b> — 빨간 ○ 는 미분불가능한 점',kind:"abs"});
+  if(on("t6"))T.push({cap:'<b>y = f(|x|)</b> — y축 대칭',kind:"even"});
+  if(on("t7"))T.push({cap:'<b>g(t)</b> — f(x)=t 의 실근 개수 (● 포함 / ○ 제외)',step:()=>plotG(cur)});
+  if(cur.deg===3&&on("t8")){
+    T.push({cap:'<b>원점에서 그은 접선</b> — 접선의 기울기마다 h(t) 가 불연속',kind:"orig"});
+    T.push({cap:'<b>h(t)</b> — f(x)=tx 의 실근 개수',step:()=>plotH(cur)});
+  }
+  if(on("tP"))T.push({cap:'<b>점 A 에서 그은 접선</b> — 점선 x = '+num(ptanInfo(cur).P)+' 위의 ○ 는 접선 개수가 바뀌는 높이',kind:"ptan"});
+  if(on("tA")&&areaInfo(cur).ok)T.push({cap:'<b>'+(cur.deg===3?'곡선과 접선 사이 넓이 (1/12)':'곡선과 이중접선 사이 넓이 (1/30)')+'</b>',kind:"area"});
+  if(on("tD")){const D=pwInfo(cur);T.push({cap:'<b>y = g(x)</b> — t = '+num(D.tg)+', c = '+num(D.cg)+(D.smooth?' 일 때 매끄럽게 이어짐 (점선은 원래 f)':' 일 때 연속이지만 꺾임'),kind:"pw"});}
+  GT=T;
   $("ovBox").style.display="flex";
-  let ab="";
-  if(on("t5"))ab+='<div class="gwrap"><p class="gcap"><b>y = |f(x)|</b> — 빨간 ○ 는 미분불가능한 점</p>'+plot(cur,"abs")+'</div>';
-  if(on("t6"))ab+='<div class="gwrap"><p class="gcap"><b>y = f(|x|)</b> — y축 대칭</p>'+plot(cur,"even")+'</div>';
-  if(on("t7"))ab+='<div class="gwrap"><p class="gcap"><b>g(t)</b> — f(x)=t 의 실근 개수 (● 포함 / ○ 제외)</p>'+plotG(cur)+'</div>';
-  if(cur.deg===3&&on("t8"))ab+='<div class="gwrap"><p class="gcap"><b>원점에서 그은 접선</b> — 접선의 기울기마다 h(t) 가 불연속</p>'+plot(cur,"orig")
-    +'<p class="gcap" style="margin-top:12px"><b>h(t)</b> — f(x)=tx 의 실근 개수</p>'+plotH(cur)+'</div>';
-  if(on("tP"))ab+='<div class="gwrap"><p class="gcap"><b>점 A 에서 그은 접선</b> — 점선 x = '+num(ptanInfo(cur).P)+' 위의 ○ 는 접선 개수가 바뀌는 높이</p>'+plot(cur,"ptan")+'</div>';
-  if(on("tA")&&areaInfo(cur).ok)ab+='<div class="gwrap"><p class="gcap"><b>'+(cur.deg===3?'곡선과 접선 사이 넓이 (1/12)':'곡선과 이중접선 사이 넓이 (1/30)')+'</b></p>'+plot(cur,"area")+'</div>';
-  if(on("tD")){const D=pwInfo(cur);ab+='<div class="gwrap"><p class="gcap"><b>y = g(x)</b> — t = '+num(D.tg)+', c = '+num(D.cg)+(D.smooth?' 일 때 매끄럽게 이어짐 (점선은 원래 f)':' 일 때 연속이지만 꺾임')+'</p>'+plot(cur,"pw")+'</div>';}
-  $("absBox").innerHTML=ab;
+  drawGraphs();
   $("tableBox").innerHTML=tableFor(cur);
   $("nextBtn").disabled=false;$("nextBtn").focus();
 }
@@ -1241,8 +1365,8 @@ function gridSpec(lo,hi,plotPx,labelPx,zoomIn,coarse){
 function autoH(H0,range,mT,mB,cell,cap){return Math.min(cap,Math.max(H0,Math.round(mT+mB+range*cell)));}
 
 /* ================= 그래프 ================= */
-function plot(p,kind){
-  const W=560;let H=kind==="base"?470:kind==="orig"?360:330;
+function plot(p,kind,fitH,fitW){
+  const W=fitW||560;let H=kind==="base"?470:kind==="orig"?360:330;
   const mL=44,mR=22,mT=kind==="base"?46:24,mB=kind==="base"?52:32;
   let x0,x1,fn=p.f;
   const feats=p.crit.map(k=>k.x).concat(p.infl);
@@ -1273,17 +1397,33 @@ function plot(p,kind){
   if(kind==="orig"){yMin=Math.min(yMin,0);yMax=Math.max(yMax,0);}
   if(kind==="ptan"){const I=ptanInfo(p);yMin=Math.min(yMin,I.q0);yMax=Math.max(yMax,I.q0);}
   const yp=(yMax-yMin)*0.10||1;yMin-=yp;yMax+=yp;
-  H=autoH(H,yMax-yMin,mT,mB,6,1100);
+  if(fitH){
+    /* 칸 높이에 맞춘다 : 세로 범위는 극점 · 특징점 위주로 (곡선 꼬리는 잘린다) */
+    H=fitH;
+    const yf=[];
+    for(const x of feats)if(x>=x0-1e-9&&x<=x1+1e-9){yf.push(fn(x));if(kind==="even")yf.push(fn(-x));}
+    if(kind==="abs"||kind==="orig")yf.push(0);
+    if(kind==="ptan"){const I=ptanInfo(p);yf.push(I.q0,p.f(I.P));}
+    if(kind==="even")yf.push(p.f0);
+    const fy=yf.filter(isFinite);
+    if(fy.length){
+      let cMin=Math.min.apply(null,fy),cMax=Math.max.apply(null,fy);
+      if(cMax-cMin<4){const c=(cMin+cMax)/2;cMin=c-2;cMax=c+2;}
+      const cp=Math.max(1,(cMax-cMin)*0.22);
+      yMin=Math.max(yMin,cMin-cp);yMax=Math.min(yMax,cMax+cp);
+    }
+  }else H=autoH(H,yMax-yMin,mT,mB,6,1100);
   const px=x=>mL+(x-x0)/(x1-x0)*(W-mL-mR);
   const py=y=>mT+(yMax-y)/(yMax-yMin)*(H-mT-mB);
   const cy=y=>Math.min(H-mB,Math.max(mT,py(y)));
 
   let g="";
   const GX=gridSpec(x0,x1,W-mL-mR,30,false),GY=gridSpec(yMin,yMax,H-mT-mB,18,false);
+  const fadeY=(H-mT-mB)/Math.max(1e-9,yMax-yMin)<5?' stroke-opacity=".45"':'';
   for(const t of GX.ticks)
     g+='<line x1="'+px(t.v)+'" y1="'+mT+'" x2="'+px(t.v)+'" y2="'+(H-mB)+'" stroke="var(--grid)" stroke-width="'+(t.label?".6":".35")+'"/>';
   for(const t of GY.ticks){
-    g+='<line x1="'+mL+'" y1="'+py(t.v)+'" x2="'+(W-mR)+'" y2="'+py(t.v)+'" stroke="var(--grid)" stroke-width="'+(t.label?".6":".35")+'"/>';
+    g+='<line x1="'+mL+'" y1="'+py(t.v)+'" x2="'+(W-mR)+'" y2="'+py(t.v)+'" stroke="var(--grid)" stroke-width="'+(t.label?".6":".35")+'"'+(t.label?'':fadeY)+'/>';
     if(t.label)g+='<text x="'+(mL-7)+'" y="'+(py(t.v)+4)+'" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="Pretendard Variable,Pretendard,sans-serif">'+t.v+'</text>';
   }
   if(GX.st!==1||GY.st!==1)
@@ -1379,7 +1519,7 @@ function plot(p,kind){
   if(kind==="orig"){
     for(const s of p.tanPts){
       const t=3*p.c3*s*s+2*p.c2*s+p.c1;
-      ov+='<line x1="'+px(x0)+'" y1="'+cy(t*x0)+'" x2="'+px(x1)+'" y2="'+cy(t*x1)+'" stroke="var(--curve-3)" stroke-width="1.2" stroke-dasharray="6 4"/>';
+      ovc+='<line x1="'+px(x0)+'" y1="'+py(t*x0)+'" x2="'+px(x1)+'" y2="'+py(t*x1)+'" stroke="var(--curve-3)" stroke-width="1.2" stroke-dasharray="6 4"/>';
       ov+='<circle cx="'+px(s)+'" cy="'+py(p.f(s))+'" r="4" fill="var(--curve-3)"/>';
       ov+='<text x="'+px(s)+'" y="'+(py(p.f(s))-9)+'" text-anchor="middle" font-size="11" fill="var(--curve-3)" font-family="Pretendard Variable,Pretendard,sans-serif">t='+num(t)+'</text>';
     }
@@ -1404,11 +1544,11 @@ function plot(p,kind){
   if(kind==="even")
     cv+='<circle cx="'+px(0)+'" cy="'+py(p.f0)+'" r="5" fill="'+(p.evenNonDiff?"var(--paper-2)":"var(--curve-2)")+'" stroke="'+(p.evenNonDiff?"var(--mark)":"var(--curve-2)")+'" stroke-width="2"/>';
   plot.n=(plot.n||0)+1;const cid="pc"+plot.n;
-  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="함수의 개형"><defs><clipPath id="'+cid+'"><rect x="'+mL+'" y="'+mT+'" width="'+(W-mL-mR)+'" height="'+(H-mT-mB)+'"/></clipPath></defs><g>'+g+'</g><g>'+ov+'</g><g clip-path="url(#'+cid+')">'+ovc+'</g><g>'+cv+'</g></svg>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="함수의 개형" data-ax="'+[x0,x1,yMin,yMax,mL,mR,mT,mB].map(v=>+(+v).toFixed(6)).join(",")+'"><defs><clipPath id="'+cid+'"><rect x="'+mL+'" y="'+mT+'" width="'+(W-mL-mR)+'" height="'+(H-mT-mB)+'"/></clipPath><clipPath id="'+cid+'c"><rect x="'+(mL-7)+'" y="'+(mT-7)+'" width="'+(W-mL-mR+14)+'" height="'+(H-mT-mB+14)+'"/></clipPath></defs><g>'+g+'</g><g>'+ov+'</g><g clip-path="url(#'+cid+')">'+ovc+'</g><g clip-path="url(#'+cid+'c)">'+cv+'</g></svg>';
 }
 
 function plotStep(segs,pts,opens,tLo,tHi,vMax){
-  const W=560,H=250,mL=42,mR=24,mT=22,mB=40,top=vMax+0.6;
+  const W=STEP_W||560,H=STEP_H||250,mL=42,mR=24,mT=22,mB=40,top=vMax+0.6;
   const px=t=>mL+(t-tLo)/(tHi-tLo)*(W-mL-mR);
   const py=v=>mT+(top-v)/top*(H-mT-mB);
   let s="";
@@ -1435,6 +1575,7 @@ function plotStep(segs,pts,opens,tLo,tHi,vMax){
   return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="근의 개수 그래프"><g>'+s+'</g></svg>';
 }
 
+let STEP_H=0,STEP_W=0;
 function plotG(p){
   const vs=critVals(p),vMax=p.deg;
   if(!vs.length){const lo=-5,hi=5;return plotStep([{a:lo,b:hi,v:gCount(p,0)}],[],[],lo,hi,vMax);}
@@ -1510,7 +1651,7 @@ for(const id of ["deg3","deg4","famAll","famA","famB","famC","famD","t8","noext"
 for(const id of ["t1","t2","t3","t4","t5","t6","t7","tT","tS","tP","tD"])
   $(id).onchange=()=>{syncChips();graded?nextProblem():render();};
 for(const id of ["ov1","ov2"])
-  $(id).onchange=()=>{syncChips();if(graded)$("graphBox").innerHTML=plot(cur,"base");};
+  $(id).onchange=()=>{syncChips();if(graded)drawGraphs();};
 document.addEventListener("keydown",e=>{
   if(e.key!=="Enter")return;
   if(e.target.tagName==="BUTTON")return;
@@ -1547,7 +1688,7 @@ function dfFactored(p){
   if(p.fam==="C")return leadStr(4*a)+p.r.map(x=>facStr(x,1)).join("");
   if(p.fam==="E"){const pp=p.pp,qq=p.qq;
     const lin=pp===0?"":(pp===1?" + <i>x</i>":pp===-1?" &minus; <i>x</i>":(pp<0?" &minus; "+(-pp)+"<i>x</i>":" + "+pp+"<i>x</i>"));
-    return leadStr(12*p.m)+facStr(p.r,1)+"(<i>x</i><sup>2</sup>"+lin+" + "+qq+")";}
+    return leadStr(4*p.co[0])+facStr(p.r,1)+"(<i>x</i><sup>2</sup>"+lin+" + "+qq+")";}
   if(p.b===0)return leadStr(4*a)+facStr(p.c,3);
   return "2"+facStr(p.c,1)+"{"+sg(2*a)+facStr(p.c,2)+" + "+sg(p.b)+"}";
 }
@@ -1591,16 +1732,40 @@ function exWindow(p){
 
 /* --- 어두운 무대 플로터 --- */
 function sPlot(cfg){
-  const W=cfg.W||620,mL=46,mR=24,mT=cfg.mT||26,mB=cfg.mB||52;let H=cfg.H||400;
+  const W=cfg.W||(!cfg.noView&&EX.fitW)||620,mL=46,mR=24,mT=cfg.mT||26,mB=cfg.mB||52;let H=cfg.H||400;
   let x0=cfg.x0,x1=cfg.x1;
   const N=360,ys=[];
   for(const fn of cfg.fns)for(let i=0;i<=N;i++){const v=fn.f(x0+(x1-x0)*i/N);if(isFinite(v))ys.push(v);}
+  const ysF=ys.slice();
   for(const h of (cfg.hlines||[]))ys.push(h.y);
   for(const m of (cfg.marks||[]))ys.push(m.y);
   let yMin=Math.min.apply(null,ys),yMax=Math.max.apply(null,ys);
   if(cfg.yPin!==undefined){yMin=Math.min(yMin,cfg.yPin);yMax=Math.max(yMax,cfg.yPin);}
   const p1=(yMax-yMin)*0.12||1;yMin-=p1;yMax+=p1;
-  if(!cfg.noView)H=autoH(H,yMax-yMin,mT,mB,6,cfg.coarse?(cfg.hCap||420):1100);
+  if(!cfg.noView&&EX.fitVB){
+    H=EX.fitVB;
+    /* 세로 범위는 함수 자체의 고정 특징점(극점 · f''=0 인 점, 그 좌우 1.5) 기준 — 움직이는 점에 따라 출렁이지 않는다 */
+    const fy=[],P=EX.p,F0=cfg.fns&&cfg.fns[0]&&cfg.fns[0].f;
+    if(P&&F0){
+      const fx=cfg.featX?cfg.featX.slice():P.crit.map(k=>k.x).concat(uniq(pRoots(pDeriv(pDeriv(P.co))),1e-7));
+      if(!fx.length)fx.push(P.deg===3?P.m:0);
+      const nb=cfg.featD===undefined?1.5:cfg.featD;
+      for(const x of fx)for(const d of [-nb,0,nb]){const z=x+d;if(z>=x0&&z<=x1)fy.push(F0(z));}
+    }
+    if(cfg.yPin!==undefined)fy.push(cfg.yPin);
+    for(const v of (cfg.keepY||[]))fy.push(v);
+    const ff=fy.filter(isFinite);
+    /* f 그래프만 자른다 (도함수 그래프는 모양 전체가 보여야 하므로 그대로) */
+    if(ff.length&&!cfg.coarse&&!cfg.noCrop){
+      let cMin=Math.min.apply(null,ff),cMax=Math.max.apply(null,ff);
+      if(cMax-cMin<4){const c=(cMin+cMax)/2;cMin=c-2;cMax=c+2;}
+      const cp=Math.max(1,(cMax-cMin)*0.22);
+      /* 곡선 자체의 범위(움직이는 점 제외)와 겹치는 부분만 */
+      const fl=Math.min.apply(null,ysF),fh=Math.max.apply(null,ysF),fp=(fh-fl)*0.12||1;
+      yMin=Math.max(fl-fp,cMin-cp);yMax=Math.min(fh+fp,cMax+cp);
+      if(cfg.yPin!==undefined){yMin=Math.min(yMin,cfg.yPin-cp*0.3);yMax=Math.max(yMax,cfg.yPin+cp*0.3);}
+    }
+  }else if(!cfg.noView)H=autoH(H,yMax-yMin,mT,mB,6,cfg.coarse?(cfg.hCap||420):1100);
   /* 사용자 확대·이동 (기본 범위를 기준으로 변환하므로 세로로 늘리면 실제로 찌그러진다) */
   const V=cfg.noView?null:EX.view;
   if(V&&(V.sx!==1||V.sy!==1||V.dx!==0||V.dy!==0)){
@@ -1628,7 +1793,7 @@ function sPlot(cfg){
   if(!cfg.noView&&(GX.st!==1||GY.st!==1))
     g+='<text x="'+(W-mR-4)+'" y="'+(mT-8)+'" text-anchor="end" font-size="11" fill="'+DK.text+'" font-family="Pretendard Variable,Pretendard,sans-serif">격자 1칸: x='+GX.st+', y='+GY.st+'</text>';
 
-  let o="";
+  let o=cfg.under?cfg.under(px,py,x0,x1,yMin,yMax):"";
   for(const A of (cfg.areas||[])){
     const M=180,bs=A.base===undefined?(()=>0):(typeof A.base==="function"?A.base:()=>A.base);
     let d="M"+px(A.x0)+" "+cy(bs(A.x0));
@@ -1648,7 +1813,7 @@ function sPlot(cfg){
   for(const h of (cfg.hlines||[]))
     o+='<line x1="'+px(h.x0!==undefined?h.x0:x0)+'" y1="'+py(h.y)+'" x2="'+px(h.x1!==undefined?h.x1:x1)+'" y2="'+py(h.y)+'" stroke="'+h.color+'" stroke-width="'+(h.w||1.4)+'" stroke-dasharray="'+(h.dash||"7 5")+'"/>';
   for(const L of (cfg.lines||[]))
-    o+='<line x1="'+px(x0)+'" y1="'+cy(L.m*x0+L.n)+'" x2="'+px(x1)+'" y2="'+cy(L.m*x1+L.n)+'" stroke="'+L.color+'" stroke-width="'+(L.w||2)+'"'+(L.dash?' stroke-dasharray="'+L.dash+'"':'')+'/>';
+    o+='<line x1="'+px(x0)+'" y1="'+py(L.m*x0+L.n)+'" x2="'+px(x1)+'" y2="'+py(L.m*x1+L.n)+'" stroke="'+L.color+'" stroke-width="'+(L.w||2)+'"'+(L.dash?' stroke-dasharray="'+L.dash+'"':'')+'/>';
   if(cfg.ruler){
     const R=cfg.ruler,rY=H-24;
     o+='<line x1="'+px(R.cx+R.u*R.marks[0])+'" y1="'+rY+'" x2="'+px(R.cx+R.u*R.marks[R.marks.length-1])+'" y2="'+rY+'" stroke="'+DK.ruler+'" stroke-width="1.6"/>';
@@ -1678,7 +1843,8 @@ function sPlot(cfg){
     c+='<circle id="'+cfg.cursor.id+'d" cx="'+cx0+'" cy="'+cy(cfg.cursor.f(cfg.cursor.x))+'" r="6" fill="'+DK.ruler+'"/>';
   }
   if(cfg.out){cfg.out.px=px;cfg.out.py=py;cfg.out.cy=cy;cfg.out.W=W;cfg.out.H=H;cfg.out.mL=mL;cfg.out.mR=mR;cfg.out.x0=x0;cfg.out.x1=x1;}
-  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="개형"><g>'+g+'</g><g>'+o+'</g><g>'+c+'</g></svg>';
+  sPlot.n=(sPlot.n||0)+1;const cid="sc"+sPlot.n;
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="개형"'+(cfg.noView?'':' data-main="1"')+' data-ax="'+[x0,x1,yMin,yMax,mL,mR,mT,mB].map(v=>+(+v).toFixed(6)).join(",")+'"><defs><clipPath id="'+cid+'"><rect x="'+(mL-8)+'" y="'+(mT-8)+'" width="'+(W-mL-mR+16)+'" height="'+(H-mT-mB+16)+'"/></clipPath></defs><g>'+g+'</g><g clip-path="url(#'+cid+')">'+o+'</g><g clip-path="url(#'+cid+')">'+c+'</g></svg>';
 }
 function miniPlot(co,x0,x1){
   return sPlot({W:300,H:190,mT:14,mB:22,x0,x1,noView:true,fns:[{f:x=>pEval(co,x),color:DK.curve,w:2.4}]});
@@ -1760,6 +1926,37 @@ function exPool(){
   if(deg()===4)return pool4();
   return on("noext")?POOL.all:POOL.ext;
 }
+/* 슬라이더 범위 (a, 접점 s, 기울기 M) — 함수가 바뀔 때마다 그 함수 기준으로 다시 잡는다 */
+function exRanges(c){
+  EX.rangeFor=c.id;
+  const w=exWindow(c);
+  $("tanS").min=Math.floor(w[0]-1);$("tanS").max=Math.ceil(w[1]+1);
+  $("tanS").value=Math.round(((w[0]+w[1])/2)*2)/2;
+  const dcN=pDeriv(c.co),yvN=[];
+  for(let i=0;i<=240;i++)yvN.push(pEval(dcN,w[0]+(w[1]-w[0])*i/240));
+  let mlo=Math.floor(Math.min.apply(null,yvN))-2,mhi=Math.ceil(Math.max.apply(null,yvN))+2;
+  /* 접점 개수가 바뀌는 M (= f' 의 극값) 이 잘 보이도록 그 주변을 중심으로 */
+  const cvN=uniq(pRoots(pDeriv(dcN)),1e-7).map(x=>pEval(dcN,x));
+  if(cvN.length){
+    const clo=Math.min.apply(null,cvN),chi=Math.max.apply(null,cvN),pad=Math.max(6,(chi-clo)*0.8);
+    mlo=Math.max(mlo,Math.floor(clo-pad));mhi=Math.min(mhi,Math.ceil(chi+pad));
+  }
+  if(mhi-mlo<4){mlo-=2;mhi+=2;}
+  $("slM").min=mlo;$("slM").max=mhi;$("slM").step=(mhi-mlo>80?1:0.5);
+  const mid=cvN.length?Math.round((Math.min.apply(null,cvN)+Math.max.apply(null,cvN))/2+ (cvN.length===1?1:0)):0;
+  $("slM").value=Math.min(mhi,Math.max(mlo,mid));
+  /* 점 A : 처음에는 접선 개수가 가장 많은 영역 근처의 정수점 (훈련 모드 유형 P 와 같은 점) */
+  const fx=c.crit.map(k=>k.x).concat(uniq(pRoots(pDeriv(dcN)),1e-7));
+  if(!fx.length)fx.push(c.deg===3?c.m:0);
+  const fys=[];for(const x of fx)for(const d of [-1.5,0,1.5])fys.push(pEval(c.co,x+d));
+  let qlo=Math.min.apply(null,fys),qhi=Math.max.apply(null,fys);const qp=Math.max(2,(qhi-qlo)*0.3);
+  qlo=Math.floor(qlo-qp);qhi=Math.ceil(qhi+qp);
+  const I=ptanInfo(c);
+  $("ptP").min=Math.floor(w[0]);$("ptP").max=Math.ceil(w[1]);
+  $("ptQ").min=Math.min(qlo,Math.floor(I.q0)-1);$("ptQ").max=Math.max(qhi,Math.ceil(I.q0)+1);
+  $("ptQ").step=($("ptQ").max-$("ptQ").min>120?1:0.25);
+  $("ptP").value=I.P;$("ptQ").value=I.q0;
+}
 function exNew(){
   const pl=exPool();
   let c=pl[Math.floor(Math.random()*pl.length)];
@@ -1769,21 +1966,7 @@ function exNew(){
   EX.choices=[c.co,c.co.map(v=>-v),exAlt(c)];
   EX.order=[0,1,2];
   for(let i=2;i>0;i--){const j=Math.floor(rnd()*(i+1));const t=EX.order[i];EX.order[i]=EX.order[j];EX.order[j]=t;}
-  const w=exWindow(c);
-  EX.a=Math.round(((w[0]+w[1])/2)*2)/2;
-  $("exA").min=Math.floor(w[0]-2);$("exA").max=Math.ceil(w[1]+2);$("exA").value=EX.a;
-  $("tanS").min=Math.floor(w[0]-1);$("tanS").max=Math.ceil(w[1]+1);
-  $("tanS").value=Math.round(((w[0]+w[1])/2)*2)/2;
-  const dcN=pDeriv(c.co),yvN=[];
-  for(let i=0;i<=240;i++)yvN.push(pEval(dcN,w[0]+(w[1]-w[0])*i/240));
-  let mlo=Math.floor(Math.min.apply(null,yvN))-2,mhi=Math.ceil(Math.max.apply(null,yvN))+2;
-  const cvN=c.infl.map(x=>pEval(dcN,x));
-  if(cvN.length){
-    const clo=Math.min.apply(null,cvN),chi=Math.max.apply(null,cvN),pad=Math.max(4,(chi-clo)*0.6);
-    mlo=Math.max(mlo,Math.floor(clo-pad));mhi=Math.min(mhi,Math.ceil(chi+pad));
-  }
-  $("slM").min=mlo;$("slM").max=mhi;$("slM").step=(mhi-mlo>80?1:0.5);
-  $("slM").value=Math.min(mhi,Math.max(mlo,0));
+  exRanges(c);
   $("exLayer").value="base";
   EX.view={sx:1,sy:1,dx:0,dy:0};$("vX").value=0;$("vY").value=0;
   exRender();
@@ -1863,11 +2046,99 @@ function stepFrom(bs,lo,hi,cnt,bcnt){
   return {segs,pts,ops,vMax};
 }
 
+/* y = t 슬라이더 : 레이어 · 함수가 바뀌면 범위를 다시 잡는다 */
+function gSlider(lo,hi,init){
+  const T=$("gT"),key=EX.p.id+"|"+$("exLayer").value+"|"+(on("gAbs")?"abs":"f");
+  const r=hi-lo,st=r<20?0.05:r<40?0.1:r<100?0.25:1;
+  if(T.dataset.key!==key){T.dataset.key=key;T.min=lo;T.max=hi;T.step=st;T.value=Math.round(init/st)*st;}
+  return T;
+}
+function gRoots(p,t,abs){
+  const at=v=>{const c=p.co.slice();c[c.length-1]-=v;let R=pRoots(c);for(const k of p.crit)if(k.v===v)R.push(k.x);return R;};
+  if(!abs)return uniq(at(t),1e-6).sort((a,b)=>a-b);
+  if(t<0)return [];
+  return uniq(t===0?at(0):at(t).concat(at(-t)),1e-6).sort((a,b)=>a-b);
+}
+/* 후보 경계 중 실제로 값이 바뀌는 곳만 : 후보 사이에서는 개수가 일정하므로,
+   후보에서의 값과 양옆 구간 가운데 값을 비교한다 (아주 작은 간격으로 찌르지 않음) */
+function pickBreaks(cand,cnt){
+  const out=[];
+  for(let i=0;i<cand.length;i++){
+    const t=cand[i],l=i>0?(cand[i-1]+t)/2:t-1,r=i<cand.length-1?(t+cand[i+1])/2:t+1;
+    const c=cnt(t);
+    if(c!==cnt(l)||c!==cnt(r))out.push(t);
+  }
+  return out;
+}
+/* ===== 점 A(P, Q) 에서 그은 접선 · 직선 (|f| 포함) ===== */
+function tanToGraph(p,P,Q,abs){
+  const out=[],df=pDeriv(p.co);
+  const add=(l,sign)=>{
+    /* |f| 에서는 그 부호 쪽의 접점만, f=0 이면서 f'≠0 인 꺾인 점은 접점이 아니다 */
+    const ss=l.s.filter(s=>{const v=pEval(p.co,s);
+      if(!abs)return true;
+      if(Math.abs(v)<1e-9&&Math.abs(pEval(df,s))>1e-9)return false;
+      return sign*v>=-1e-9;});
+    if(!ss.length)return;
+    const o=out.find(z=>near(z.m,l.m)&&near(z.n,l.n));
+    /* 여러 겹 근이 수치적으로 갈라진 접점(1e-5 이내)은 하나로 */
+    const dd=a=>{const r=[];for(const s of a.sort((x,y)=>x-y))if(!r.some(v=>Math.abs(v-s)<1e-5*(1+Math.abs(s))))r.push(s);return r;};
+    if(o){o.s=dd(o.s.concat(ss));}else out.push({m:l.m,n:l.n,s:dd(ss.slice())});
+  };
+  for(const l of tanLinesFrom(p,P,Q))add(l,1);
+  if(abs)for(const l of tanLinesFrom({co:p.co.map(v=>-v)},P,Q))add(l,-1);
+  return out;
+}
+function hitsLine(p,P,Q,t,abs,TL){
+  const L=x=>t*(x-P)+Q,lin=pad0([t,Q-t*P],p.co.length);
+  let R=pRoots(pAdd(p.co,pScale(lin,-1)));
+  if(abs)R=R.concat(pRoots(pAdd(p.co,lin)));
+  for(const g of (TL||[]))if(Math.abs(g.m-t)<1e-9)for(const s of g.s)R.push(s);
+  if(abs)for(const r of pRoots(p.co))if(Math.abs(L(r))<1e-9)R.push(r);
+  R=R.filter(x=>{const v=pEval(p.co,x),l=L(x);return abs?(l>=-1e-7&&Math.abs(Math.abs(v)-l)<=1e-6*(1+Math.abs(l))):Math.abs(v-l)<=1e-6*(1+Math.abs(l));});
+  return uniq(R.sort((a,b)=>a-b),1e-5);
+}
+function hBounds2(p,P,Q,abs,TL){
+  let cand=TL.map(g=>g.m);
+  if(abs){
+    const df=pDeriv(p.co);
+    for(const r of uniq(pRoots(p.co),1e-9)){
+      if(Math.abs(r-P)>1e-9)cand.push(-Q/(r-P));
+      /* A 가 |f| 의 꺾인 점이면 양쪽 한쪽 기울기 ±f'(r) 에서도 바뀐다 */
+      else if(Math.abs(Q)<1e-9){const m=pEval(df,r);if(Math.abs(m)>1e-9)cand.push(m,-m);}
+    }
+  }
+  cand=uniq(cand.sort((a,b)=>a-b),1e-9);
+  const cnt=t=>hitsLine(p,P,Q,t,abs,TL).length;
+  return pickBreaks(cand,cnt);
+}
+/* 직선 y = Q 위에서 p 를 움직일 때 접선 개수가 바뀌는 p */
+function ptanRow(p,Q){
+  const df=pDeriv(p.co),d2=pDeriv(df),c0=p.co.slice();c0[c0.length-1]-=Q;
+  let cand=pRoots(c0);
+  for(const w of uniq(pRoots(d2),1e-7)){const m=pEval(df,w);if(Math.abs(m)>1e-12)cand.push(w+(Q-pEval(p.co,w))/m);}
+  if(p.bt&&p.bt.exists&&Math.abs(p.bt.m)>1e-12)cand.push((Q-p.bt.n)/p.bt.m);
+  cand=uniq(cand.sort((a,b)=>a-b),1e-9);
+  const cnt=x=>tanLinesFrom(p,x,Q).length;
+  return pickBreaks(cand,cnt);
+}
+/* 슬라이더 스냅 : 슬라이더 전체 폭의 1% 안에 들어오면 목표값에 정확히 고정 (슬라이더 칸에 안 맞는 무리수 값도 그대로) */
+function snapTo(el,targets){
+  const raw=+el.value,tol=0.01*((+el.max)-(+el.min));
+  let best=null,bd=Infinity;
+  for(const t of targets){const d=Math.abs(t-raw);if(d<=tol&&d<bd){bd=d;best=t;}}
+  return best===null?{v:raw,snap:false}:{v:best,snap:true};
+}
+function paintSnap(id,v,snap,label){
+  const e=$(id);
+  e.innerHTML=num(+(+v).toFixed(4))+(snap?'<span class="snapk">'+label+'</span>':'');
+  e.classList.toggle("snap",!!snap);
+}
 function exStage(){
+  if(EX.p&&EX.rangeFor!==EX.p.id)exRanges(EX.p);
   const p=EX.p,layer=$("exLayer").value,w=exWindow(p);
-  $("exHctl").hidden=layer!=="h";
   $("exPctl").hidden=layer!=="param";
-  $("exTanCtl").hidden=layer!=="tan";$("exSlCtl").hidden=layer!=="slope";
+  const tmM=on("tmM");$("exTmCtl").hidden=layer!=="tan";$("exTanCtl").hidden=!(layer==="tan"&&!tmM);$("exSlCtl").hidden=!(layer==="tan"&&tmM);$("exGCtl").hidden=layer!=="g";$("exPtCtl").hidden=layer!=="ptan";$("exDctl").hidden=layer!=="deriv";$("dF2wrap").style.display=p.deg===3?"":"none";
   let html="",sub="",why="";
   if(layer==="base"){
     const marks=p.crit.map(k=>({x:k.x,y:k.v,color:k.type==="none"?DK.soft:DK.ext,hollow:k.type==="none",
@@ -1900,39 +2171,63 @@ function exStage(){
     sub=readout([["극대",p.crit.filter(k=>k.type==="max").length],["극소",p.crit.filter(k=>k.type==="min").length]].concat(p.deg===3?[["변곡점",p.infl.length]]:[]));
   }
   else if(layer==="deriv"){
-    const dco=pDeriv(p.co);
+    const dco=pDeriv(p.co),d2=pDeriv(dco),S=structInfo(p),q4=p.deg===4,showF2=!q4&&on("dF2");
     EX.m1={};EX.m2={};
     const cx=EX.cx===undefined?(w[0]+w[1])/2:Math.min(w[1],Math.max(w[0],EX.cx));
     EX.cx=cx;
-    const top=sPlot({H:270,x0:w[0],x1:w[1],fns:[{f:p.f,color:DK.curve,w:2.8}],
-      marks:p.crit.filter(k=>k.type!=="none").map(k=>({x:k.x,y:k.v,color:DK.ext,r:4.5})),
+    const m0=p.crit.map(k=>({x:k.x,y:k.v,color:k.type==="none"?DK.soft:DK.ext,r:4.8,hollow:k.type==="none"}));
+    if(!q4)for(const x of p.infl)m0.push({x,y:p.f(x),color:DK.curve2,r:4.5,hollow:true,label:"변곡"});
+    const c1=p.crit.map(k=>({x:k.x,y:0,color:k.type==="none"?DK.soft:DK.ext,hollow:k.type==="none",r:5.2}));
+    const top=sPlot({H:270,x0:w[0],x1:w[1],fns:[{f:p.f,color:DK.curve,w:2.8}],marks:m0,
       cursor:{id:"curA",x:cx,f:p.f},out:EX.m1});
     const bot=sPlot({H:250,coarse:true,x0:w[0],x1:w[1],yPin:0,fns:[{f:x=>pEval(dco,x),color:DK.curve2,w:2.8}],
-      marks:p.crit.map(k=>({x:k.x,y:0,color:DK.ext,r:4.5,hollow:true})),
-      cursor:{id:"curB",x:cx,f:x=>pEval(dco,x)},out:EX.m2});
-    html='<div class="gcap" style="color:'+DK.curve+'"><b>y = f(x)</b></div>'+top
-      +'<div class="gcap" style="margin-top:8px;color:'+DK.curve2+'"><b>y = f&prime;(x)</b> — 같은 x 를 세로선이 관통합니다</div>'+bot;
-    sub='<div class="readout" id="exCur"></div>';
-    why="<span class='math'><i>f</i>&prime;</span> 이 <b>x축 위</b>면 <span class='math'><i>f</i></span> 가 증가, <b>아래</b>면 감소. <span class='math'><i>f</i>&prime;</span> 이 x축을 <b>가로지르는</b> 순간이 극점입니다. 그래프 위에서 마우스를 움직이거나 손가락으로 문질러 보세요.";
+      marks:c1,cursor:{id:"curB",x:cx,f:x=>pEval(dco,x)},out:EX.m2});
+    html='<div class="gcap" style="color:'+DK.curve+'"><b>y = f(x)</b> — ● 극값 / ○ f&prime;=0 이지만 극값 아님</div>'+top
+      +'<div class="gcap" style="margin-top:8px;color:'+DK.curve2+'"><b>y = f&prime;(x)</b> — 세로선이 같은 x 를 관통 · 0 을 <b>가로지르는</b> 점만 극점</div>'+bot;
+    const r2=uniq(pRoots(d2),1e-6),isInf=x=>p.infl.some(v=>Math.abs(v-x)<1e-6);
+    if(showF2){
+      const c2=r2.map(x=>({x,y:0,color:isInf(x)?DK.ruler:DK.soft,hollow:!isInf(x),r:5.2}));
+      html+='<div class="gcap" style="margin-top:8px;color:'+DK.line+'"><b>y = f&Prime;(x)</b> — 0 을 <b>가로지르는</b> 점이 변곡점</div>'
+        +sPlot({H:200,coarse:true,x0:w[0],x1:w[1],yPin:0,fns:[{f:x=>pEval(d2,x),color:DK.line,w:2.8}],marks:c2});
+    }
+    const rows=[["f&prime;=0 실근",S.n1],["극값 아닌 점",S.nonExt],["극점 x 폭",S.wid]];
+    if(showF2)rows.push(["f&Prime;=0 실근",S.n2],["변곡점 아닌 점",S.nonInfl]);
+    sub='<div class="readout" id="exCur"></div>'+readout(rows);
+    const nn=p.crit.filter(k=>k.type==="none").map(k=>num(k.x));
+    why="<span class='math'><i>f</i>&prime;</span> 이 <b>x축 위</b>면 <span class='math'><i>f</i></span> 가 증가, <b>아래</b>면 감소. <span class='math'><i>f</i>&prime;=0</span> 의 근이라도 x축을 <b>가로질러야</b>(부호가 바뀌어야) 극점이고, 닿기만 하는 <b>짝수 중근</b>은 극값이 아닙니다. 그래프 위에서 마우스를 움직이거나 손가락으로 문질러 보세요."
+      +(nn.length?"<br>· <span class='math'><i>f</i>&prime;=0</span> 이지만 극값이 아닌 점 : <span class='math'><i>x</i> = "+nn.join(", ")+"</span>":"")
+      +(showF2?"<br>· <span class='math'><i>f</i>&Prime;</span> 도 0 을 가로질러야 변곡점입니다."+(r2.filter(x=>!isInf(x)).length?" 변곡점이 아닌 <span class='math'><i>f</i>&Prime;=0</span> : <span class='math'><i>x</i> = "+r2.filter(x=>!isInf(x)).map(num).join(", ")+"</span>":""):"");
   }
-  else if(layer==="gabs"){
+  else if(layer==="g"&&on("gAbs")){
     const vs=critVals(p);
     const cand=uniq([0].concat(vs.map(Math.abs)),1e-9).filter(t=>t>=0);
     const cnt=t=>t<0?0:(t===0?gCount(p,0):gCount(p,t)+gCount(p,-t));
     const bs=cand.filter(t=>cnt(t)!==cnt(t-0.25)||cnt(t)!==cnt(t+0.25));
-    const hl=bs.filter(t=>t>0).map(t=>({y:t,color:DK.ruler,dash:"6 5"}));
-    html=sPlot({H:300,x0:w[0],x1:w[1],yPin:0,fns:[
-      {f:p.f,color:DK.soft,w:1.4,dash:"6 5"},{f:x=>Math.abs(p.f(x)),color:DK.curve2,w:3}],hlines:hl});
     const lo=-Math.max(1,Math.round((bs.length?bs[bs.length-1]:2)*0.4)),hi=Math.ceil((bs.length?bs[bs.length-1]:2)*1.4)+1;
+    const T=gSlider(lo,hi,bs.length?bs[Math.floor(bs.length/2)]/2:1);
+    const SN=snapTo(T,bs),t=SN.v;paintSnap("gTv",t,SN.snap,t===0?"x축":"극값");
+    const xs=gRoots(p,t,true);
+    const hl=bs.filter(v=>v>0).map(v=>({y:v,color:DK.ruler,dash:"6 5",w:1}));
+    hl.push({y:t,color:DK.line,w:2.2});
+    const marks=xs.map(x=>({x,y:t,color:DK.ruler,r:5.5}));
+    /* |f| 의 꺾이는 점 (f=0 이면서 f'≠0) */
+    const dcoA=pDeriv(p.co),corners=pRoots(p.co).filter(r=>Math.abs(pEval(dcoA,r))>1e-6);
+    for(const x of corners)marks.push({x,y:0,color:DK.ext,r:5.5,hollow:true});
+    if(SN.snap)for(const k of p.crit)if(Math.abs(k.v)===t)marks.push({x:k.x,y:Math.abs(k.v),color:DK.line,r:8.5,hollow:true,label:"접점"});
+    html=sPlot({H:300,x0:w[0],x1:w[1],yPin:0,fns:[
+      {f:p.f,color:DK.soft,w:1.4,dash:"6 5"},{f:x=>Math.abs(p.f(x)),color:DK.curve2,w:3}],hlines:hl,marks});
     const ed=[lo].concat(bs,[hi]),segs=[],pts=[],ops=[];
     for(let i=0;i<ed.length-1;i++)segs.push({a:ed[i],b:ed[i+1],v:cnt((ed[i]+ed[i+1])/2)});
-    for(const t of bs){
-      const v=cnt(t);pts.push({t,v});
-      for(const q of segs)if((Math.abs(q.a-t)<1e-9||Math.abs(q.b-t)<1e-9)&&q.v!==v)ops.push({t,v:q.v});
+    for(const q0 of bs){
+      const v=cnt(q0);pts.push({t:q0,v});
+      for(const q of segs)if((Math.abs(q.a-q0)<1e-9||Math.abs(q.b-q0)<1e-9)&&q.v!==v)ops.push({t:q0,v:q.v});
     }
     const vMax=Math.max.apply(null,segs.map(q=>q.v).concat(pts.map(q=>q.v),[2]));
-    sub=readout([["불연속 t 개수",bs.length],["최대 근의 개수",vMax]])+sStep(segs,pts,ops,lo,hi,vMax);
-    why="<span class='math'>|<i>f</i>(<i>x</i>)| = <i>t</i></span> 는 <span class='math'><i>t</i>&lt;0</span> 이면 해가 없고, <span class='math'><i>t</i>&gt;0</span> 이면 <span class='math'><i>f</i>=<i>t</i></span> 와 <span class='math'><i>f</i>=&minus;<i>t</i></span> 의 근을 합친 것입니다. 계단이 바뀌는 곳은 <b>극값의 절댓값</b>과 <span class='math'><i>t</i>=0</span>.";
+    sub=readout([["t",num(+t.toFixed(4))],["|f(x)|=t 의 실근 개수",xs.length],["불연속 t 개수",bs.length],["최대 근의 개수",vMax]])
+      +readout([["|f| 미분불가능 점 (빨간 ○)",p.absNonDiff],["|f| 극댓값 개수",p.absMax],["|f| 극솟값 개수",p.absMin]])
+      +sStep(segs,pts,ops,lo,hi,vMax,t);
+    why="<span class='math'>|<i>f</i>(<i>x</i>)| = <i>t</i></span> 는 <span class='math'><i>t</i>&lt;0</span> 이면 해가 없고, <span class='math'><i>t</i>&gt;0</span> 이면 <span class='math'><i>f</i>=<i>t</i></span> 와 <span class='math'><i>f</i>=&minus;<i>t</i></span> 의 근을 합친 것입니다. 계단이 바뀌는 곳은 <b>극값의 절댓값</b>과 <span class='math'><i>t</i>=0</span>.<br><span class='math'>|<i>f</i>|</span> 는 <span class='math'><i>f</i>=0</span> 인 점 중 <b><span class='math'><i>f</i>&prime;≠0</span> 인 곳에서만</b> 꺾입니다 (빨간 ○). 중근 · 삼중근에서는 매끄럽게 이어집니다."
+      +(SN.snap?"<br>지금 <span class='math'><i>y</i>="+num(t)+"</span> 에서 그래프에 <b>접합니다</b>.":"");
   }
   else if(layer==="param"){
     $("exPctl").hidden=false;
@@ -1941,6 +2236,7 @@ function exStage(){
     let co,d=0,hasE,ruler=null,note;
     if(deg()===3){
       $("pMlab").textContent="m";$("pKlab").textContent="k";$("pNlab").textContent="n";
+      $("pMlab").title="변곡점의 x 좌표";$("pKlab").title="극값 개수를 정하는 상수 (k<0 이면 극값 2개)";$("pNlab").title="변곡점의 y 좌표 f(m)";
       co=[A0,-3*A0*M,3*A0*(M*M+K),-A0*M*M*M-3*A0*K*M+N0];
       hasE=K<0;d=hasE?Math.sqrt(-K):0;
       if(hasE)ruler={cx:M,u:d,marks:[-2,-1,0,1,2],labels:["1","1","1","1"],mode:"seg"};
@@ -1948,6 +2244,7 @@ function exStage(){
         :(K===0?"<span class='math'><i>f</i>&prime;</span> 이 중근 → 극값 없음 (수평접선만)":"<span class='math'><i>f</i>&prime;</span> 이 허근 → 극값 없음");
     }else{
       $("pMlab").textContent="c";$("pKlab").textContent="b";$("pNlab").textContent="e";
+      $("pMlab").title="대칭축 x = c";$("pKlab").title="(x−c)² 의 계수 (a 와 부호가 반대면 극점 3개)";$("pNlab").title="대칭축에서의 함숫값 f(c)";
       co=[A0,-4*A0*M,6*A0*M*M+K,-4*A0*M*M*M-2*K*M,A0*M*M*M*M+K*M*M+N0];
       const r=-K/(2*A0);hasE=r>0;d=hasE?Math.sqrt(r):0;
       if(hasE)ruler={cx:M,u:d,marks:[0,1,S2],labels:["","1","√2"],mode:"pos"};
@@ -1960,28 +2257,43 @@ function exStage(){
     if(deg()===3&&hasE){marks.push({x:M-d,y:fn(M-d),color:DK.ext},{x:M+d,y:fn(M+d),color:DK.ext});}
     if(deg()===4&&hasE){marks.push({x:M-d,y:fn(M-d),color:DK.ext},{x:M,y:fn(M),color:DK.ext},{x:M+d,y:fn(M+d),color:DK.ext});}
     html='<div class="gcap"><b class="math">f(x) = '+pStr(co)+'</b></div>'
-      +sPlot({H:340,x0:M-span,x1:M+span,fns:[{f:fn,color:DK.curve,w:2.8}],marks,ruler});
-    sub=readout([["극값 개수",hasE?(deg()===3?2:3):(deg()===3?0:1)],["a",A0],[deg()===3?"k":"b",K]]);
+      +sPlot({featX:hasE?[M-d,M,M+d]:[M],featD:hasE?Math.max(0.4,d*0.7):1.2,H:340,x0:M-span,x1:M+span,fns:[{f:fn,color:DK.curve,w:2.8}],marks,ruler});
+    const PR=(k,t)=>'<div style="display:grid;grid-template-columns:28px 1fr;gap:8px;padding:5px 0;border-top:1px dashed var(--rule)"><b class="math" style="font-size:16px">'+k+'</b><span>'+t+'</span></div>';
+    const legend='<div class="panel" style="margin:10px 0 0;padding:10px 14px;font-size:13.5px;line-height:1.55">'
+      +(deg()===3
+        ?'<div style="margin-bottom:4px"><b class="math" style="font-size:16px">f(x) = a(x &minus; m)<sup>3</sup> + 3ak(x &minus; m) + n</b> 꼴로 움직입니다.</div>'
+          +PR('a','<b>최고차항 계수</b> — 부호는 오른쪽 끝이 올라가는지(+) 내려가는지(&minus;), 크기는 세로로 늘이는 정도.')
+          +PR('m','<b>변곡점의 x 좌표</b> — 그래프를 좌우로 평행이동합니다.')
+          +PR('k','<b>f&prime;(x) = 3a{(x &minus; m)<sup>2</sup> + k} 의 상수</b> — k &lt; 0 이면 극값 2개 (극점 x = m ± √(&minus;k)), k = 0 이면 극값 없이 수평으로 지나가고, k &gt; 0 이면 극값 없음.')
+          +PR('n','<b>변곡점의 y 좌표 = f(m)</b> — 그래프를 위아래로 평행이동합니다.')
+        :'<div style="margin-bottom:4px"><b class="math" style="font-size:16px">f(x) = a(x &minus; c)<sup>4</sup> + b(x &minus; c)<sup>2</sup> + e</b> 꼴로 움직입니다.</div>'
+          +PR('a','<b>최고차항 계수</b> — 부호는 양 끝이 위(+)인지 아래(&minus;)인지, 크기는 세로로 늘이는 정도.')
+          +PR('c','<b>대칭축 x = c</b> — 그래프를 좌우로 평행이동합니다.')
+          +PR('b','<b>(x &minus; c)<sup>2</sup> 의 계수</b> — a 와 부호가 반대면 극점 3개 (x = c, c ± √(&minus;b/2a)), 같거나 0 이면 극점 1개.')
+          +PR('e','<b>대칭축에서의 함숫값 f(c)</b> — 그래프를 위아래로 평행이동합니다. (x &minus; c) 로 정리했을 때의 상수항이라, c = 0 일 때만 전개한 f(x) 의 상수항과 같습니다.'))
+      +'</div>';
+    sub=readout([["극값 개수",hasE?(deg()===3?2:3):(deg()===3?0:1)],["a",A0],[deg()===3?"k":"b",K]])+legend;
     why=note+"<br><b>"+(deg()===3?"m, n 을 움직여도 눈금 비율은 그대로":"c, e 를 움직여도 눈금 비율은 그대로")
       +"</b>입니다. 평행이동과 세로 확대는 <span class='math'><i>x</i></span> 방향 비율을 바꾸지 않기 때문입니다. "
       +(deg()===3?"<span class='math'><i>k</i></span>":"<span class='math'><i>b</i></span>")+" 의 부호가 바뀌는 순간 극값이 사라집니다.";
   }
-  else if(layer==="abs"){
-    const dco=pDeriv(p.co),corners=pRoots(p.co).filter(r=>Math.abs(pEval(dco,r))>1e-6);
-    const marks=corners.map(x=>({x,y:0,color:DK.ext,r:5.5,hollow:true}));
-    html=sPlot({x0:w[0],x1:w[1],yPin:0,fns:[
-      {f:p.f,color:DK.soft,w:1.6,dash:"6 5"},
-      {f:x=>Math.abs(p.f(x)),color:DK.curve2,w:3}],marks});
-    sub=readout([["미분불가능 점",p.absNonDiff],["극댓값",p.absMax],["극솟값",p.absMin]]);
-    why="<span class='math'><i>f</i>=0</span> 인 점 중 <b><span class='math'><i>f</i>&prime;≠0</span> 인 곳에서만</b> 꺾입니다. 중근·삼중근에서는 매끄럽게 이어집니다.";
-  }
+
   else if(layer==="g"){
     const vs=critVals(p);
-    const hl=vs.map(v=>({y:v,color:DK.ruler,dash:"6 5"}));
+    const lo=vs.length?vs[0]-Math.max(1,Math.round((vs[vs.length-1]-vs[0])*0.35)||2):-5;
+    const hi=vs.length?vs[vs.length-1]+Math.max(1,Math.round((vs[vs.length-1]-vs[0])*0.35)||2):5;
+    const T=gSlider(lo,hi,vs.length?(vs[0]+vs[vs.length-1])/2:0);
+    const SN=snapTo(T,vs),t=SN.v;paintSnap("gTv",t,SN.snap,"극값");
+    const xs=gRoots(p,t,false);
+    const hl=vs.map(v=>({y:v,color:DK.ruler,dash:"6 5",w:1}));
+    hl.push({y:t,color:DK.line,w:2.2});
     const marks=p.crit.filter(k=>k.type!=="none").map(k=>({x:k.x,y:k.v,color:DK.ext}));
+    for(const x of xs)marks.push({x,y:t,color:DK.ruler,r:5.5});
+    if(SN.snap)for(const k of p.crit)if(k.v===t)marks.push({x:k.x,y:k.v,color:DK.line,r:8.5,hollow:true,label:"접점"});
     html=sPlot({x0:w[0],x1:w[1],H:330,fns:[{f:p.f,color:DK.curve}],hlines:hl,marks});
-    sub=plotGDark(p);
-    why="수평선 <span class='math'><i>y</i>=<i>t</i></span> 를 위아래로 움직일 때 교점 개수가 바뀌는 순간은 <b>극값을 지날 때</b> 뿐입니다 → 그 <span class='math'><i>t</i></span> 에서 <span class='math'><i>g</i></span> 가 불연속.";
+    sub=readout([["t",num(+t.toFixed(4))],["g(t) = f(x)=t 의 실근 개수",xs.length]])+plotGDark(p,t);
+    why="수평선 <span class='math'><i>y</i>=<i>t</i></span> 를 위아래로 움직일 때 교점 개수가 바뀌는 순간은 <b>극값을 지날 때</b> 뿐입니다 → 그 <span class='math'><i>t</i></span> 에서 <span class='math'><i>g</i></span> 가 불연속."
+      +(SN.snap?"<br>지금 <span class='math'><i>y</i>="+num(t)+"</span> 은 극값이라 극점에서 곡선에 <b>접합니다</b> (중근).":"");
   }
   else if(layer==="area"){
     const dco=pDeriv(p.co),cs=p.crit,a=p.co[0];
@@ -2042,7 +2354,7 @@ function exStage(){
       }
     }
   }
-  else if(layer==="tan"){
+  else if(layer==="tan"&&!on("tmM")){
     const s=+$("tanS").value;
     $("tanSv").textContent=num(s);
     const dco=pDeriv(p.co),m=pEval(dco,s),n=p.f(s)-m*s;
@@ -2063,7 +2375,7 @@ function exStage(){
        :"<span class='math'>(<i>x</i>&minus;<i>s</i>)<sup>2</sup>(이차식)</span> 꼴입니다. 이차식의 판별식이 <b>0</b>이 되는 <span class='math'><i>s</i></span> 에서는 다른 한 점에서도 접하고(이중접선), 이차식의 근이 <span class='math'><i>x</i>=<i>s</i></span> 가 되는 <span class='math'><i>s</i></span> 에서는 접점에서 <b>삼중근</b>이 되어 교점이 1개로 줄어듭니다.")
       +"<br>교점 개수가 바뀌는 <span class='math'><i>s</i></span> : "+(bs.length?bs.map(num).join(", "):"없음");
   }
-  else if(layer==="slope"){
+  else if(layer==="tan"&&on("tmM")){
     const M=+$("slM").value;
     $("slMv").textContent=num(M);
     const dco=pDeriv(p.co),dm=dco.slice();dm[dm.length-1]-=M;
@@ -2085,61 +2397,94 @@ function exStage(){
     why="기울기가 <span class='math'><i>M</i></span> 인 접선의 접점은 <span class='math'><i>f</i>&prime;(<i>x</i>) = <i>M</i></span> 의 실근입니다. 수평선 <span class='math'><i>y</i>=<i>M</i></span> 을 움직일 때 개수가 바뀌는 순간은 <b><span class='math'><i>f</i>&prime;</span> 의 극값</b>을 지날 때입니다."
       +(p.infl.length?"":"<br>이 함수는 <span class='math'><i>f</i>&prime;</span> 이 단조 → 어떤 <span class='math'><i>M</i></span> 에서도 접점은 1개.");
   }
-  else if(layer==="struct"){
-    const S=structInfo(p),d1=pDeriv(p.co),d2=pDeriv(d1),q4=p.deg===4;
-    const r2=uniq(pRoots(d2),1e-6);
-    const isInf=x=>p.infl.some(v=>Math.abs(v-x)<1e-6);
-    const m0=p.crit.map(k=>({x:k.x,y:k.v,color:k.type==="none"?DK.soft:DK.ext,hollow:k.type==="none"}));
-    if(!q4)for(const x of p.infl)m0.push({x,y:p.f(x),color:DK.curve2,r:4.5,hollow:true,label:"변곡"});
-    const c1=p.crit.map(k=>({x:k.x,y:0,color:k.type==="none"?DK.soft:DK.ext,hollow:k.type==="none",r:5.4}));
-    const c2=r2.map(x=>({x,y:0,color:isInf(x)?DK.ruler:DK.soft,hollow:!isInf(x),r:5.4}));
-    html='<div class="gcap" style="color:'+DK.curve+'"><b>y = f(x)</b></div>'
-      +sPlot({H:250,x0:w[0],x1:w[1],fns:[{f:p.f,color:DK.curve}],marks:m0})
-      +'<div class="gcap" style="margin-top:8px;color:'+DK.curve2+'"><b>y = f&prime;(x)</b> — 0 을 <b>가로지르는</b> 점이 극점 (● 극값 / ○ 극값 아님)</div>'
-      +sPlot({H:220,coarse:true,x0:w[0],x1:w[1],yPin:0,fns:[{f:x=>pEval(d1,x),color:DK.curve2,w:2.8}],marks:c1});
-    if(!q4)html+='<div class="gcap" style="margin-top:8px;color:'+DK.line+'"><b>y = f&Prime;(x)</b> — 0 을 <b>가로지르는</b> 점이 변곡점 (● 변곡점 / ○ 변곡점 아님)</div>'
-      +sPlot({H:200,coarse:true,x0:w[0],x1:w[1],yPin:0,fns:[{f:x=>pEval(d2,x),color:DK.line,w:2.8}],marks:c2});
-    const rows=q4?[["f&prime;=0 실근",S.n1],["극값 아닌 점",S.nonExt],["극점 x 폭",S.wid]]
-      :[["f&prime;=0 실근",S.n1],["극값 아닌 점",S.nonExt],["f&Prime;=0 실근",S.n2],["변곡점 아닌 점",S.nonInfl],["극점 x 폭",S.wid]];
-    sub=readout(rows);
-    const nn=p.crit.filter(k=>k.type==="none").map(k=>num(k.x));
-    const ni=r2.filter(x=>!isInf(x)).map(num);
-    why="<span class='math'><i>f</i>&prime;=0</span> 의 근이라도 <b>부호가 바뀌어야</b> 극값입니다. 부호가 안 바뀌는 건 <b>짝수 중근</b>입니다."
-      +(q4?"":" 마찬가지로 <span class='math'><i>f</i>&Prime;=0</span> 의 근도 부호가 바뀌어야 변곡점입니다.")
-      +(nn.length?"<br>· <span class='math'><i>f</i>&prime;=0</span> 이지만 극값이 아닌 점 : <span class='math'><i>x</i> = "+nn.join(", ")+"</span> (<span class='math'><i>f</i>&prime;</span> 의 중근)":"")
-      +(!q4&&ni.length?"<br>· <span class='math'><i>f</i>&Prime;=0</span> 이지만 변곡점이 아닌 점 : <span class='math'><i>x</i> = "+ni.join(", ")+"</span> (<span class='math'><i>f</i>&Prime;</span> 의 중근)":"");
+  else{ /* layer === "ptan" : 점 A(p, q) 에서 그은 직선 · 접선 */
+    const P=+$("ptP").value,Q=+$("ptQ").value,q4=p.deg===4,abs=on("exAbsTarget");
+    $("ptPv").textContent=num(P);$("ptQv").textContent=num(Q);
+    const F=abs?(x=>Math.abs(p.f(x))):p.f;
+    const TL=tanToGraph(p,P,Q,abs),N=TL.length;
+    const bs=hBounds2(p,P,Q,abs,TL);
+    EX.bounds=bs;
+    /* 기울기 t 슬라이더 범위 : 경계들을 넉넉히 포함 */
+    const sp=bs.length>1?bs[bs.length-1]-bs[0]:0,pad=Math.max(3,sp*0.45);
+    const tLo=Math.min(-10,Math.floor((bs.length?bs[0]:0)-pad)),tHi=Math.max(10,Math.ceil((bs.length?bs[bs.length-1]:0)+pad));
+    const T=$("exT");
+    if(+T.min!==tLo||+T.max!==tHi){const keep=+T.value;T.min=tLo;T.max=tHi;T.step=(tHi-tLo)<40?0.05:(tHi-tLo)<120?0.1:0.5;T.value=Math.min(tHi,Math.max(tLo,keep));}
+    const SN=snapTo(T,bs);EX.t=SN.v;const t=EX.t;
+    paintSnap("exTv",t,SN.snap,"접선");
+    const hits=hitsLine(p,P,Q,t,abs,TL);
+    /* 색칠 : 그 점에서 그을 수 있는 접선 개수 (f 에 대해서만) */
+    const COL=["rgba(0,0,0,0)","rgba(110,150,255,.10)","rgba(255,216,77,.17)","rgba(255,107,74,.24)","rgba(199,125,255,.30)"];
+    const under=abs?null:(px,py,x0,x1,y0,y1)=>{
+      const key=[p.id,x0,x1,y0,y1].map(v=>typeof v==="number"?v.toFixed(4):v).join("|");
+      let E=EX.ptGrid&&EX.ptGrid.key===key?EX.ptGrid:null;
+      if(!E){
+        const fine=EX.ptFineKey===key;
+        const C=fine?116:58,R=fine?76:38,dx=(x1-x0)/C,dy=(y1-y0)/R,g=new Int8Array(C*R);
+        for(let j=0;j<R;j++){const yc=y1-(j+0.5)*dy;for(let i=0;i<C;i++)g[j*C+i]=Math.min(4,tanLinesFrom(p,x0+(i+0.5)*dx,yc).length);}
+        E={key,g,C,R};
+        if(fine)EX.ptGrid=E;
+        else{clearTimeout(EX.ptT);EX.ptT=setTimeout(()=>{EX.ptFineKey=key;if($("exLayer").value==="ptan")exStage();},220);}
+      }
+      const G=E.g,C=E.C,R=E.R,dx=(x1-x0)/C,dy=(y1-y0)/R;
+      let out="";
+      for(let j=0;j<R;j++){
+        const yt=py(y1-j*dy),yb=py(y1-(j+1)*dy);let run=-1,st=0;
+        for(let i=0;i<=C;i++){
+          const c=i<C?G[j*C+i]:-2;
+          if(c!==run){
+            if(run>0){const xa=px(x0+st*dx),xb=px(x0+i*dx);out+='<rect x="'+xa.toFixed(2)+'" y="'+yt.toFixed(2)+'" width="'+(xb-xa).toFixed(2)+'" height="'+(yb-yt).toFixed(2)+'" fill="'+COL[run]+'"/>';}
+            run=c;st=i;
+          }
+        }
+      }
+      return '<g shape-rendering="crispEdges">'+out+'</g>';
+    };
+    const marks=[];
+    for(const g of TL)for(const z of g.s)marks.push({x:z,y:F(z),color:"#8FB3FF",r:4.2,hollow:true});
+    for(const x of hits)marks.push({x,y:F(x),color:DK.ruler,r:5.6});
+    if(SN.snap)for(const g of TL)if(Math.abs(g.m-t)<1e-9)for(const z of g.s)marks.push({x:z,y:F(z),color:DK.line,r:8.5,hollow:true,label:"접점"});
+    marks.push({x:P,y:Q,color:DK.ext,r:6.5,label:"A"});
+    const fns=abs?[{f:p.f,color:DK.soft,w:1.4,dash:"6 5"},{f:F,color:DK.curve2,w:3}]:[{f:p.f,color:DK.curve}];
+    const lines=TL.map(g=>({m:g.m,n:g.n,color:"#8FB3FF",w:1.3,dash:"6 5"}));
+    lines.push({m:t,n:Q-t*P,color:DK.line,w:2.3});
+    html='<div class="gcap" style="color:'+DK.curve+'"><b>'+(abs?'y = |f(x)|':'y = f(x)')+'</b> — 초록 = A 를 지나는 기울기 t 직선, 파란 점선 = A 에서 그은 접선'+(abs?'':' · 색 = 그 점에서 그을 수 있는 접선 개수')+'</div>'
+      +sPlot({x0:w[0],x1:w[1],yPin:abs?0:undefined,fns,marks,lines,under:under||undefined});
+    /* 계단 그래프들 */
+    const cntT=x=>hitsLine(p,P,Q,x,abs,TL).length;
+    const sT=stepFrom(bs.filter(b=>b>tLo&&b<tHi),tLo,tHi,cntT,cntT);
+    let steps='<div class="gcap" style="margin-top:10px;color:'+DK.line+'"><b>h(t)</b> — A 를 지나는 기울기 t 직선과의 교점 개수 (불연속 t : '+(bs.length?bs.map(fmt3).join(", "):"없음")+')</div>'
+      +sStep(sT.segs,sT.pts,sT.ops,tLo,tHi,sT.vMax,t);
+    const leg='<span class="rd"><i style="display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px;border:1px solid #9DB6C4"></i>0개</span>'
+      +[1,2,3,4].filter(c=>c<=(q4?4:3)).map(c=>'<span class="rd"><i style="display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px;background:'+COL[c].replace(/,\.\d+\)/,",.85)")+'"></i>'+c+'개</span>').join("");
+    if(!abs){
+      const plo=+$("ptP").min,phi=+$("ptP").max,rb=ptanRow(p,Q).filter(b=>b>plo&&b<phi);
+      const cntP=x=>tanLinesFrom(p,x,Q).length,sP=stepFrom(rb,plo,phi,cntP,cntP);
+      const qlo=+$("ptQ").min,qhi=+$("ptQ").max,qb=ptanAt(p,P).bs.filter(b=>b>qlo&&b<qhi);
+      const cntQ=q=>tanLinesFrom(p,P,q).length,sQ=stepFrom(qb,qlo,qhi,cntQ,cntQ);
+      steps+='<div class="gcap" style="margin-top:10px;color:'+DK.line+'"><b>직선 y = '+num(Q)+' 위에서</b> — p 에 따른 접선 개수'+(Q===0?' (= N(a), x축 위의 점)':'')+' · 경계 p : '+(rb.length?rb.map(fmt3).join(", "):"없음")+'</div>'
+        +sStep(sP.segs,sP.pts,sP.ops,plo,phi,sP.vMax,P)
+        +'<div class="gcap" style="margin-top:10px;color:'+DK.line+'"><b>직선 x = '+num(P)+' 위에서</b> — q 에 따른 접선 개수 · 경계 q : '+(qb.length?qb.map(fmt3).join(", "):"없음")+'</div>'
+        +sStep(sQ.segs,sQ.pts,sQ.ops,qlo,qhi,sQ.vMax,Q);
+    }
+    sub=readout([["A",'('+num(P)+', '+num(Q)+')'],[abs?"|f| 에 그은 접선":"접선 개수",N],["기울기 t",num(+t.toFixed(4))],["h(t) 교점",hits.length]])
+      +(abs?'':'<div class="readout" style="margin-top:4px">'+leg+'</div>')+steps;
+    const onC=Math.abs(F(P)-Q)<1e-9;
+    why="<b>접선 개수</b> : A 에서 그은 접선의 접점 <span class='math'><i>s</i></span> 는 <span class='math'><i>f</i>(<i>s</i>) + <i>f</i>&prime;(<i>s</i>)(<i>p</i> &minus; <i>s</i>) = <i>q</i></span> 의 실근입니다"+(q4?" (이중접선은 두 접점이 한 직선이라 하나로 셉니다)":"")+"."
+      +(onC?" A 가 곡선 위에 있으면 A 에서의 접선도 하나로 셉니다.":"")
+      +"<br><b>h(t)</b> : A 를 지나는 직선의 기울기 <span class='math'><i>t</i></span> 를 바꾸면, 교점 개수는 <b>그 직선이 접선이 될 때</b>"+(abs?" 그리고 <b>|f| 의 꺾인 점(f=0)을 지날 때</b>":"")+"만 바뀝니다. 슬라이더가 접선 기울기 근처에 오면 그 값에 달라붙습니다."
+      +(abs?"":(q4?"<br>접선 개수가 바뀌는 경계는 <b>곡선</b>, <b>이중접선</b>, 그리고 <b><span class='math'><i>f</i>&prime;</span> 의 극점에서 그은 접선</b>입니다."
+        :"<br>삼차함수는 <b>곡선</b>과 <b>변곡점에서의 접선</b>이 평면을 나눕니다. 두 선 사이에서는 3개, 선 위에서는 2개(변곡점 자체는 1개), 그 밖에서는 1개. A 를 x축 위에 두면(q = 0) N(a) 입니다."));
   }
-  else{
-    const useAbs=on("exAbsTarget");
-    EX.a=+$("exA").value;
-    const HB=hBoundaries(p,EX.a,useAbs);
-    EX.bounds=HB.bounds;
-    const bs=HB.bounds.slice().sort((x,y)=>x-y);
-    const sp=bs.length>1?bs[bs.length-1]-bs[0]:0;
-    const padT=Math.max(2,sp*0.45);
-    const tLo=Math.min(-30,Math.floor((bs.length?bs[0]:0)-padT));
-    const tHi=Math.max(30,Math.ceil((bs.length?bs[bs.length-1]:0)+padT));
-    $("exT").min=tLo;$("exT").max=tHi;$("exT").step=0.05;
-    if(EX.t<tLo||EX.t>tHi){EX.t=0;$("exT").value=0;}
-    EX.t=+$("exT").value;
-    $("exAv").textContent=num(EX.a);$("exTv").textContent=num(EX.t);
-    const F=useAbs?(x=>Math.abs(p.f(x))):p.f;
-    const hits=useAbs?hitsAbs(p,EX.a,EX.t,HB.tans):hitsF(p,EX.a,EX.t,HB.tans);
-    const marks=hits.filter(x=>x>=w[0]-1&&x<=w[1]+1).map(x=>({x,y:F(x),color:DK.ruler,r:5.5}));
-    marks.push({x:EX.a,y:0,color:DK.ext,r:5,label:"(a, 0)"});
-    const fns=[{f:F,color:useAbs?DK.curve2:DK.curve,w:3}];
-    if(useAbs)fns.unshift({f:p.f,color:DK.soft,w:1.4,dash:"6 5"});
-    html=sPlot({x0:w[0],x1:w[1],yPin:0,fns,marks,
-      lines:[{m:EX.t,n:-EX.t*EX.a,color:DK.line,w:2.2}]});
-    const cnt=hits.length;
-    sub=readout([["h(t)",cnt],["불연속 t 개수",bs.length],["접선 개수",tanCount(p,EX.a)]])
-      +plotHDark(p,bs,tLo,tHi,EX.t,useAbs,HB.tans)
-      +'<div class="gcap" style="margin-top:10px;color:'+DK.line+'"><b>N(a)</b> — 점 (a, 0) 에서 그을 수 있는 접선의 개수</div>'
-      +plotNDark(p,EX.a,w);
-    why="점 <span class='math'>("+num(EX.a)+", 0)</span> 을 지나는 직선의 기울기 <span class='math'><i>t</i></span> 를 바꾸면 교점 개수가 바뀌는 순간은 <b>그 점에서 그은 접선이 될 때</b>"
-      +(useAbs?" 그리고 <b><span class='math'><i>x</i></span>축과 겹칠 때</b>":"")+"입니다. 불연속인 <span class='math'><i>t</i></span> : "+(bs.length?bs.map(num).join(", "):"없음");
-  }
-  $("exPlot").innerHTML=html;$("exSub").innerHTML=sub;$("exWhy").innerHTML=why;
+  $("exPlot").innerHTML=html;
+  if(!EX.fitting){
+    const mains=[...$("exPlot").querySelectorAll("svg[data-main]")],n=mains.length,w=mains.length?mains[0].clientWidth:0;
+    if(n&&w>80){
+      const tot=$("exPlot").getBoundingClientRect().height,mh=mains.reduce((a,m)=>a+m.getBoundingClientRect().height,0);
+      const per=Math.max(150,Math.min((window.innerHeight-24-(tot-mh))/n,w*(n===1?0.62:0.48)));
+      const fw=Math.max(620,Math.min(900,Math.round(w*0.85))),vb=Math.round(fw*per/w);
+      if(!EX.fitVB||Math.abs(vb-EX.fitVB)>3||fw!==EX.fitW){EX.fitVB=vb;EX.fitW=fw;EX.fitting=true;try{exStage();}finally{EX.fitting=false;}return;}
+    }
+  }$("exSub").innerHTML=sub;$("exWhy").innerHTML=why;
   $("exView").hidden=false;
   $("vXv").textContent="×"+EX.view.sx.toFixed(2);
   $("vYv").textContent="×"+EX.view.sy.toFixed(2);
@@ -2201,7 +2546,7 @@ function areaFormula(p){
 function readout(rows){
   return '<div class="readout">'+rows.map(r=>'<span class="rd">'+r[0]+' <b>'+r[1]+'</b></span>').join("")+'</div>';
 }
-function plotGDark(p){
+function plotGDark(p,cur){
   const vs=critVals(p),vMax=p.deg;
   if(!vs.length)return sStep([{a:-5,b:5,v:gCount(p,0)}],[],[],-5,5,vMax);
   const span=vs[vs.length-1]-vs[0],pd=Math.max(1,Math.round(span*0.35)||2);
@@ -2212,7 +2557,7 @@ function plotGDark(p){
     const v=gCount(p,t);pts.push({t,v});
     for(const q of segs)if((Math.abs(q.a-t)<1e-9||Math.abs(q.b-t)<1e-9)&&q.v!==v)ops.push({t,v:q.v});
   }
-  return sStep(segs,pts,ops,lo,hi,vMax);
+  return sStep(segs,pts,ops,lo,hi,vMax,cur);
 }
 function plotHDark(p,bs,tLo,tHi,cur,useAbs,tans){
   const cnt=t=>(useAbs?hitsAbs(p,EX.a,t,tans):hitsF(p,EX.a,t,tans)).length;
@@ -2249,7 +2594,6 @@ function exAttachCursor(){
       +'<span class="rd">f(x) <b>'+p.f(x).toFixed(2)+'</b></span>'
       +'<span class="rd">f&prime;(x) <b>'+dv.toFixed(2)+'</b></span>'
       +'<span class="rd" style="border-color:'+(dv>0?DK.line:DK.ext)+'">'+(Math.abs(dv)<1e-9?"수평":dv>0?"증가 ↗":"감소 ↘")+'</span>';
-    if(e.cancelable)e.preventDefault();
   };
   host.onmousemove=move;host.ontouchmove=move;host.ontouchstart=move;
   move({clientX:svgs[0].getBoundingClientRect().left+svgs[0].getBoundingClientRect().width*
@@ -2300,54 +2644,90 @@ $("vY").oninput=()=>{EX.view.sy=sliderToScale(+$("vY").value);exRedraw();};
 $("vReset").onclick=e=>{e.stopPropagation();viewReset();};
 (function(){
   const host=$("exPlot");
-  let drag=null,pinch=null;
-  const pxFrac=e=>{const r=host.getBoundingClientRect();return {w:r.width,h:r.height};};
+  let drag=null,pinch=null,touch=null;
+  const box=()=>{const r=host.getBoundingClientRect();return {w:r.width,h:r.height};};
+  const syncSl=()=>{$("vX").value=Math.round(Math.log2(EX.view.sx)*50);$("vY").value=Math.round(Math.log2(EX.view.sy)*50);};
+  /* 휠: Ctrl/⌘ 를 누를 때만 확대 (트랙패드 핀치도 Ctrl 로 들어온다). 그냥 휠은 페이지 스크롤 */
   host.addEventListener("wheel",e=>{
+    if(!(e.ctrlKey||e.metaKey))return;
     e.preventDefault();
-    const k=e.deltaY<0?1.12:1/1.12;
+    const dy=e.deltaY||e.deltaX;
+    const k=dy<0?1.12:1/1.12;
     if(!e.altKey)EX.view.sx=Math.min(64,Math.max(0.2,EX.view.sx*k));
     if(!e.shiftKey)EX.view.sy=Math.min(64,Math.max(0.2,EX.view.sy*k));
-    $("vX").value=Math.round(Math.log2(EX.view.sx)*50);
-    $("vY").value=Math.round(Math.log2(EX.view.sy)*50);
-    exRedraw();
+    syncSl();exRedraw();
   },{passive:false});
-  host.addEventListener("mousedown",e=>{drag={x:e.clientX,y:e.clientY};host.classList.add("grabbing");});
+  /* 점 A 레이어 : 탭/클릭한 위치로 A 를 옮긴다 (0.25 단위) */
+  const tapTo=(cx,cy_)=>{
+    if($("exLayer").value!=="ptan")return false;
+    const svg=host.querySelector("svg[data-main]");if(!svg)return false;
+    const r=svg.getBoundingClientRect();if(cx<r.left||cx>r.right||cy_<r.top||cy_>r.bottom)return false;
+    const [x0,x1,y0,y1,mL,mR,mT,mB]=svg.getAttribute("data-ax").split(",").map(Number);
+    const vb=svg.viewBox.baseVal,u=(cx-r.left)/r.width*vb.width,v=(cy_-r.top)/r.height*vb.height;
+    const X=x0+(u-mL)/(vb.width-mL-mR)*(x1-x0),Y=y1-(v-mT)/(vb.height-mT-mB)*(y1-y0);
+    const sn=z=>Math.round(z*4)/4;
+    const P=$("ptP"),Q=$("ptQ");
+    P.value=Math.min(+P.max,Math.max(+P.min,sn(X)));
+    Q.value=Math.min(+Q.max,Math.max(+Q.min,sn(Y)));
+    exStage();return true;
+  };
+  let down=null;
+  host.addEventListener("click",e=>{e.stopPropagation();});
+  host.addEventListener("mousedown",e=>{down={x:e.clientX,y:e.clientY};drag={x:e.clientX,y:e.clientY};host.classList.add("grabbing");});
+  host.addEventListener("mouseup",e=>{if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<4)tapTo(e.clientX,e.clientY);down=null;});
   window.addEventListener("mousemove",e=>{
     if(!drag)return;
-    const d=pxFrac();
+    const d=box();
     EX.view.dx+=(e.clientX-drag.x)/d.w/EX.view.sx;
     EX.view.dy-=(e.clientY-drag.y)/d.h/EX.view.sy;
     drag={x:e.clientX,y:e.clientY};
     exRedraw();
   });
   window.addEventListener("mouseup",()=>{drag=null;host.classList.remove("grabbing");});
+  /* 터치: 한 손가락은 방향을 먼저 판단 — 위아래면 브라우저가 페이지를 스크롤(touch-action:pan-y),
+     좌우면 그래프를 가로로 이동. 두 손가락은 확대 + 이동. */
+  const mid=t=>({x:(t[0].clientX+t[1].clientX)/2,y:(t[0].clientY+t[1].clientY)/2,d:Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)});
   host.addEventListener("touchstart",e=>{
     if(e.touches.length===2){
-      const a=e.touches[0],b=e.touches[1];
-      pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),sx:EX.view.sx,sy:EX.view.sy};
-      drag=null;
-    }else if(e.touches.length===1&&$("exLayer").value!=="deriv"){
-      drag={x:e.touches[0].clientX,y:e.touches[0].clientY};
+      const m=mid(e.touches);
+      pinch={d:m.d,sx:EX.view.sx,sy:EX.view.sy,x:m.x,y:m.y};touch=null;
+    }else if(e.touches.length===1){
+      touch={x0:e.touches[0].clientX,y0:e.touches[0].clientY,x:e.touches[0].clientX,axis:null};pinch=null;
     }
   },{passive:true});
   host.addEventListener("touchmove",e=>{
     if(pinch&&e.touches.length===2){
-      const a=e.touches[0],b=e.touches[1];
-      const k=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/pinch.d;
+      const m=mid(e.touches),k=m.d/pinch.d,d=box();
       EX.view.sx=Math.min(64,Math.max(0.2,pinch.sx*k));
       EX.view.sy=Math.min(64,Math.max(0.2,pinch.sy*k));
-      $("vX").value=Math.round(Math.log2(EX.view.sx)*50);
-      $("vY").value=Math.round(Math.log2(EX.view.sy)*50);
-      exRedraw();e.preventDefault();
-    }else if(drag&&e.touches.length===1){
-      const d=pxFrac(),t=e.touches[0];
-      EX.view.dx+=(t.clientX-drag.x)/d.w/EX.view.sx;
-      EX.view.dy-=(t.clientY-drag.y)/d.h/EX.view.sy;
-      drag={x:t.clientX,y:t.clientY};
-      exRedraw();e.preventDefault();
+      EX.view.dx+=(m.x-pinch.x)/d.w/EX.view.sx;
+      EX.view.dy-=(m.y-pinch.y)/d.h/EX.view.sy;
+      pinch.x=m.x;pinch.y=m.y;
+      syncSl();exRedraw();
+      if(e.cancelable)e.preventDefault();
+      return;
     }
+    if(!touch||e.touches.length!==1)return;
+    const t=e.touches[0];
+    if(!touch.axis){
+      const ax=Math.abs(t.clientX-touch.x0),ay=Math.abs(t.clientY-touch.y0);
+      if(ax<8&&ay<8)return;
+      touch.axis=ax>ay?"x":"y";
+    }
+    if(touch.axis!=="x"||$("exLayer").value==="deriv")return;
+    const d=box();
+    EX.view.dx+=(t.clientX-touch.x)/d.w/EX.view.sx;
+    touch.x=t.clientX;
+    exRedraw();
+    if(e.cancelable)e.preventDefault();
   },{passive:false});
-  host.addEventListener("touchend",()=>{pinch=null;drag=null;});
+  host.addEventListener("touchend",e=>{
+    if(e.touches.length===0){
+      if(touch&&!touch.axis&&e.changedTouches.length===1){const t=e.changedTouches[0];if(tapTo(t.clientX,t.clientY)&&e.cancelable)e.preventDefault();}
+      pinch=null;touch=null;
+    }
+  });
+  host.addEventListener("touchcancel",()=>{pinch=null;touch=null;});
 })();
 /* --- 탐구 이벤트 --- */
 function exGo(d){
@@ -2361,10 +2741,30 @@ $("exBack").onclick=()=>exGo(-1);
 $("exNew").onclick=e=>{e.stopPropagation();exNew();};
 $("exCard").onclick=()=>exGo(1);
 $("exLayer").onchange=()=>{viewReset();exStage();};
-for(const id of ["exA","exT","tanS","slM"])$(id).oninput=exStage;
+for(const id of ["exT","tanS","slM","ptP","ptQ","gT"])$(id).oninput=exStage;
+for(const id of ["tmS","tmM"])$(id).onchange=()=>{$("tmS").parentElement.classList.toggle("on",on("tmS"));$("tmM").parentElement.classList.toggle("on",on("tmM"));viewReset();exStage();};
+$("dF2").onchange=()=>{viewReset();exStage();};
+$("gAbs").onchange=()=>{viewReset();exStage();};
 $("exAbsTarget").onchange=()=>{EX.t=0;$("exT").value=0;exStage();};
 for(const id of ["pA","pM","pK","pN"])$(id).oninput=exStage;
 $("exSave").onclick=exSave;
+
+/* --- 문항 설정 접기 (기기별로 기억, 처음에는 화면 높이가 낮으면 접힘) --- */
+function paintSetSum(){
+  const on_=[...document.querySelectorAll("#drillSet .chip.on")].filter(c=>c.style.display!=="none")
+    .map(c=>c.textContent.trim());
+  $("setSum").textContent=on_.length?on_.join(" · "):"선택된 유형 없음";
+}
+function setFold(v,remember){
+  $("drillSet").classList.toggle("folded",v);
+  $("setFold").setAttribute("aria-expanded",String(!v));
+  if(remember){try{localStorage.setItem("cubicDrillFold",v?"1":"0");}catch(e){}}
+  paintSetSum();
+}
+$("setFold").onclick=()=>setFold(!$("drillSet").classList.contains("folded"),true);
+$("drillSet").addEventListener("change",()=>setTimeout(paintSetSum,0));
+{let f=null;try{f=localStorage.getItem("cubicDrillFold");}catch(e){}
+ setFold(f===null?(window.innerHeight<=920&&window.innerWidth>860):f==="1",false);}
 
 function applyMode(){
   const ex=on("modeEx");
